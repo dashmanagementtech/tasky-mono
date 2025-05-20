@@ -4,5 +4,6 @@
 <template>
   <main class="h-screen w-screen flex items-center justify-center text-2xl">
     Welcome To ManageR
+    <el-button>Hello World</el-button>
   </main>
 </template>

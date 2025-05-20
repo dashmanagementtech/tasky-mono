@@ -1,0 +1,16 @@
+{
+  "name": "@dash/shared",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --dts --format esm,cjs --clean",
+    "dev": "tsup src/index.ts --dts --watch"
+  },
+  "dependencies": {
+    "class-validator": "0.14.2"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0"
+  }
+}
