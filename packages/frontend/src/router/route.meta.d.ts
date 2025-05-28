@@ -2,6 +2,9 @@ import 'vue-router'
 
 declare module 'vue-router' {
   interface RouteMeta {
-    layout?: 'auth' | 'app'
+    layout?: 'auth' | 'app',
+    parent?: string,
+    acl?: string[],
+    name?: string
   }
 }

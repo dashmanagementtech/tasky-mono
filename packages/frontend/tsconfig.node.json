@@ -15,7 +15,7 @@
     "emitDeclarationOnly": true,
 
     "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "bundler",
     "types": ["node"]
   }
 }

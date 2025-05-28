@@ -1,8 +1,15 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "target": "ES2020",
+    "module": "nodenext",
+    "strict": true,
     "outDir": "dist",
-    "experimentalDecorators": true
+    "rootDir": "src",
+    "experimentalDecorators": true,
+    "moduleResolution": "nodenext"
   },
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*"
+  ]
 }
