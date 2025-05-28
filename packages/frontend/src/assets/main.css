@@ -26,4 +26,6 @@
   --color-gray: oklch(0.2435 0 0);
 
   --color-black: oklch(0.1591 0 0);
+
+  --font-sans: 'Montserrat', 'sans-serif';
 }

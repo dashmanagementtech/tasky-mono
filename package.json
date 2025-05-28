@@ -3,11 +3,16 @@
   "workspaces": [
     "packages/*"
   ],
+  "nohoist": true,
   "scripts": {
     "build": "tsc --build tsconfig.base.json",
     "build:shared": "yarn workspace @dash/shared build",
     "build:backend": "yarn workspace @dash/backend build",
     "build:frontend": "yarn workspace @dash/frontend build",
+    "start:frontend": "yarn workspace @dash/frontend dev",
+    "start:types": "yarn workspace @dash/shared dev",
+    "start:fe-types": "concurrently \"yarn workspace @dash/frontend dev\" \"yarn workspace @dash/shared dev \"",
+    "start:be-types": "concurrently \"yarn workspace @dash/backend start:dev\" \"yarn workspace @dash/shared dev \"",
     "start:dev": "concurrently \"yarn workspace @dash/backend start:dev \" \"yarn workspace @dash/frontend dev\" \"yarn workspace @dash/shared dev \""
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",

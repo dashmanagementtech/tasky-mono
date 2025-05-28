@@ -1,5 +1,5 @@
 {
-  "files": [],
+  // "files": [],
   "references": [
     {
       "path": "packages/shared",
@@ -16,10 +16,11 @@
     "module": "CommonJS",
     "strict": true,
     "declaration": true,
-    "composite": true,
+    // "composite": true,
     "baseUrl": ".",
     "paths": {
-      "@dash/shared": ["packages/shared/src"]
+      "@dash/shared": ["packages/shared/src", "packages/shared/dist/*", "packages/shared/src/*"]
     }
-  }
+  },
+  "include": ["packages/shared/src/**/*"]
 }
