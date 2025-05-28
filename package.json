@@ -9,6 +9,7 @@
     "build:shared": "yarn workspace @dash/shared build",
     "build:backend": "yarn workspace @dash/backend build",
     "build:frontend": "yarn workspace @dash/frontend build",
+    "build:fe-staging": "yarn workspace @dash/frontend build-only",
     "start:frontend": "yarn workspace @dash/frontend dev",
     "start:types": "yarn workspace @dash/shared dev",
     "start:fe-types": "concurrently \"yarn workspace @dash/frontend dev\" \"yarn workspace @dash/shared dev \"",
