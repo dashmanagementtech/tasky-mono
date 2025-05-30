@@ -3,6 +3,7 @@ import type { ILoginData } from '@dash/shared'
 import type { FormInstance, FormRules } from 'element-plus'
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+// @ts-expect-error Type not declared
 import AppLogo from '@/shared/components/Logo.vue'
 
 const router = useRouter()

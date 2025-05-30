@@ -10,6 +10,14 @@ const authRoutes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/accept-invite',
+    name: 'accept-invite',
+    component: () => import('../view/AcceptInvite.vue'),
+    meta: {
+      layout: 'auth'
+    }
+  },
+  {
     path: '/login',
     redirect: '/'
   }
