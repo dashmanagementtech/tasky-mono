@@ -8,7 +8,8 @@ const dashboardRoutes: RouteRecordRaw[] = [
     meta: {
       layout: 'app',
       parent: '/app/dashboard',
-      name: 'dashboard'
+      name: 'dashboard',
+      protected: true
     }
   },
 ]

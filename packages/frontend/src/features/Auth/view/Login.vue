@@ -2,13 +2,16 @@
 import type { ILoginData } from '@dash/shared'
 import type { FormInstance, FormRules } from 'element-plus'
 import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+
+// @ts-expect-error Type not declared
 import AppLogo from '@/shared/components/Logo.vue'
 
-const router = useRouter()
+import { useAuth } from '../composable/useAuth'
+
+const service = useAuth()
+const { loading } = service
 
 const loginFormRef = ref<FormInstance>()
-const loading = ref(false)
 const auth = reactive<ILoginData>({
   email: '',
   password: '',
@@ -38,13 +41,13 @@ const rules = reactive<FormRules<typeof auth>>({
 
 async function submitAuth(formEl: FormInstance | undefined) {
   if (!formEl) return
-  await formEl.validate((valid, fields) => {
+  await formEl.validate(async (valid, fields) => {
     if (!valid) {
       console.warn('Invalid fields ', fields)
       return
     }
 
-    router.push('/app/dashboard')
+    await service.logUserIn(auth)
   })
 }
 </script>

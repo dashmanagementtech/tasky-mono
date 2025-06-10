@@ -17,12 +17,22 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "strictPropertyInitialization": false, // Good for NestJS DI
   },
-  "references": [
-    {
-      "path": "../shared"
-    }
-  ],
-  "include": ["src/**/*"]
+  // "references": [
+  //   {
+  //     "path": "../shared"
+  //   }
+  // ],
+  "include": [
+    "src/**/*",
+    "config/**/*",
+    "utils/**/*",
+    "strategy/**/*",
+    "decorators/**/*",
+    "guards/**/*",
+    "services/**/*",
+    "types/**/*"
+  ]
 }
