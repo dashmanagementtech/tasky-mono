@@ -20,11 +20,11 @@
     "noFallthroughCasesInSwitch": false,
     "strictPropertyInitialization": false, // Good for NestJS DI
   },
-  "references": [
-    {
-      "path": "../shared"
-    }
-  ],
+  // "references": [
+  //   {
+  //     "path": "../shared"
+  //   }
+  // ],
   "include": [
     "src/**/*",
     "config/**/*",

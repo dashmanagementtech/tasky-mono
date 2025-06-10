@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 
@@ -25,19 +29,23 @@ export class AuthService {
 
   async logUserIn(data: AuthLoginDto): AuthResponse {
     try {
-      const user = await findUserByEmail(data.email);
+      const _user = await findUserByEmail(data.email);
 
-      const compareHash = bcrypt.compareSync(data.password, user.passwordHash);
+      const compareHash = bcrypt.compareSync(data.password, _user.passwordHash);
 
-      if (!compareHash) throw new NotFoundException('user not found')
+      if (!compareHash) throw new NotFoundException('user not found');
 
       const auth = {
-        token: this.jwtServce.sign({ userId: user.id }),
-        refresh: this.jwtServce.sign({ userId: user.id }, { expiresIn: '7d' }),
+        token: this.jwtServce.sign({ userId: _user.id }),
+        refresh: this.jwtServce.sign({ userId: _user.id }, { expiresIn: '7d' }),
       };
 
-      return { user, auth };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { passwordHash: password, ...user } = _user;
+
+      return { user, auth } as unknown as AuthResponse;
     } catch (error: any) {
+      console.log(error);
       throw new InternalServerErrorException(error);
     }
   }

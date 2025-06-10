@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { JwtStrategy } from 'strategy/jwt.strategy';
+import { StaffModule } from './staff/staff.module';
 
 const ENV = process.env.NODE_ENV;
 
@@ -23,6 +24,7 @@ const ENV = process.env.NODE_ENV;
       },
     ]),
     AuthModule,
+    StaffModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

@@ -5,6 +5,7 @@ declare module 'vue-router' {
     layout?: 'auth' | 'app',
     parent?: string,
     acl?: string[],
+    protected?: boolean,
     name?: string
   }
 }

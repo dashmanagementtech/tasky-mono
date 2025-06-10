@@ -1,5 +1,3 @@
-import { LoginDTO } from './types/Auth'
-
 export * from './types/Test'
 export * from './types/Auth'
 

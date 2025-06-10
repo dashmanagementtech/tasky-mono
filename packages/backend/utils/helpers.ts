@@ -1,5 +1,6 @@
 import { prisma } from 'config/prisma';
 import { isEmpty } from 'lodash';
+import * as bcrypt from 'bcryptjs';
 
 export function validateEmail(email: string) {
   try {
@@ -20,26 +21,22 @@ export function validateEmail(email: string) {
 }
 
 export async function findUserByEmail(email: string) {
-  try {
-    validateEmail(email);
+  validateEmail(email);
 
-    const user = await prisma.users.findUnique({
-      where: {
-        email,
-      },
-      include: {
-        tasks: true,
-        watching: true,
-        projects: true,
-        createdProjects: true,
-      },
-    });
+  const user = await prisma.users.findUnique({
+    where: {
+      email,
+    },
+    include: {
+      tasks: true,
+      watching: true,
+      projects: true,
+      createdProjects: true,
+    },
+  });
 
-    if (!user) throw Error('user not found');
-    return user;
-  } catch (error: any) {
-    throw new Error(error);
-  }
+  if (!user) throw { message: 'user not found' } as any;
+  return user;
 }
 
 export async function findUserById(id: string) {
@@ -61,4 +58,8 @@ export async function findUserById(id: string) {
   } catch (error: any) {
     throw new Error(error);
   }
+}
+
+export function bcryptSalt() {
+  return bcrypt.genSaltSync(10);
 }

@@ -1,16 +1,40 @@
 import type { ILoginData } from '@dash/shared'
+
+import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
 
+import { useRouter } from 'vue-router'
+
+import { createApiConfig } from '@/config/api'
+import { useAppStore } from '@/stores/app'
+import { useAuthStore } from '../store/useAuthStore'
+
+const baseUrl = import.meta.env.VITE_BASE_URL
+
+const api = createApiConfig(`${baseUrl}/auth`)
 const loading = ref(false)
 
 export function useAuth() {
+  const appstore = useAppStore()
+  const authstore = useAuthStore()
+
+  const router = useRouter()
+
   const logUserIn = async function (payload: ILoginData) {
     loading.value = true
     try {
-      console.warn({ payload })
+      const { user, auth } = await api.post('/login', payload)
+
+      appstore.setRefresh(auth.refresh)
+      appstore.setToken(auth.token)
+
+      authstore.setUser(user)
+
+      router.replace({ name: 'dashboard' })
+      ElMessage.success(`Welcome back, ${user.firstName}`)
     }
-    catch (error) {
-      console.error(error)
+    catch (error: any | { message: string }) {
+      ElMessage.error(error.message)
     }
     finally {
       loading.value = false
@@ -19,6 +43,6 @@ export function useAuth() {
 
   return {
     logUserIn,
-    loading
+    loading,
   }
 }
