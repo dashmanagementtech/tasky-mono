@@ -4,13 +4,13 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';
 
 import { findUserById } from 'utils/helpers';
-import { CurrentUser } from 'decorators/current-user.decorator'; // adjust path
+import { CurrentUserService } from 'services/current-user.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     private reflector: Reflector,
-    private currentUserService: typeof CurrentUser,
+    private currentUserService: CurrentUserService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -33,7 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       throw new UnauthorizedException();
     }
 
-    this.currentUserService.setUser(user); // ✅ set current user
+    this.currentUserService.setUser(user);
 
     return user;
   }

@@ -1,22 +1,15 @@
-import { Module, Scope } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { refreshJwtStrategy } from './strategy/refreshToken.strategy';
-import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
-import { CurrentUser } from 'decorators/current-user.decorator';
+import { CurrentUserService } from 'services/current-user.service';
 
 @Module({
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    refreshJwtStrategy,
-    {
-      provide: CurrentUser,
-      useClass: CurrentUser,
-      scope: Scope.REQUEST,
-    },
-  ],
+  providers: [AuthService, refreshJwtStrategy, CurrentUserService],
   imports: [
     PassportModule,
     JwtModule.register({
@@ -24,6 +17,6 @@ import { CurrentUser } from 'decorators/current-user.decorator';
       signOptions: { expiresIn: '20m' },
     }),
   ],
-  exports: [CurrentUser],
+  exports: [CurrentUserService],
 })
 export class AuthModule {}
