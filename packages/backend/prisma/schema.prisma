@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id        String   @id @default(ulid())
+  createdAt DateTime @default(now())
+
+  email        String @unique
+  passwordHash String
+
+  firstName       String
+  lastName        String
+  username        String
+  isEmailVerified Boolean @default(false)
+
+  img  String?
+  role ROLE    @default(USER)
+
+  tasks    Tasks[]    @relation("userTasks")
+  watching Tasks[]    @relation("userWatching")
+  comments Comments[] @relation("comment")
+
+  projects        Projects_Users[]
+  createdProjects Projects[]
+}
+
+model Projects {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  createdBy Users    @relation(fields: [uid], references: [id])
+
+  title       String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  uid         String
+  status      String
+
+  users Projects_Users[]
+}
+
+model Sprints {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  startDate DateTime
+  endDate   DateTime
+  goals     String   @db.VarChar(5000)
+
+  tasks Tasks[]
+}
+
+model Tasks {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  sid       String
+  uid       String
+  createdBy String
+
+  startDate DateTime
+  dueDate   DateTime
+
+  status      String
+  description String @db.VarChar(5000)
+
+  assignedTo Users @relation("userTasks", fields: [uid], references: [id])
+  watcher    Users @relation("userWatching", fields: [createdBy], references: [id])
+
+  sprint   Sprints    @relation(fields: [sid], references: [id])
+  comments Comments[] @relation("comment")
+}
+
+model Comments {
+  id        String   @id @default(ulid())
+  createdAt DateTime @default(now())
+
+  uid  String
+  tid  String
+  text String @db.VarChar(5000)
+
+  user Users @relation("comment", fields: [uid], references: [id])
+  task Tasks @relation("comment", fields: [tid], references: [id])
+}
+
+model Projects_Users {
+  createdAt DateTime @default(now())
+
+  uid String
+  pid String
+
+  user     Users    @relation(fields: [uid], references: [id])
+  project  Projects @relation(fields: [pid], references: [id])
+  userRole String
+
+  @@id([uid, pid])
+}
+
+enum ROLE {
+  ADMIN
+  USER
+}
