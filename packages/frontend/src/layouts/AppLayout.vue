@@ -1,14 +1,22 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
 import Logo from '@/shared/components/Logo.vue';
+
 import { COMMON, ROUTES } from './utils/constants';
 import LogoutIcon from './icons/LogoutIcon.vue';
+
+import { resetAllStores } from '@/stores/resetAllStores';
 
 const route = useRoute()
 const router = useRouter()
 
 function logUserOut() {
-  router.push('/')
+  try {
+    resetAllStores()
+    router.replace('/')
+  } catch(e) {
+    console.warn(e)
+  }
 }
 </script>
 

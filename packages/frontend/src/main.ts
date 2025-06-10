@@ -1,4 +1,5 @@
 import { createPinia } from 'pinia'
+import { createPersistedState } from 'pinia-plugin-persistedstate'
 import { createApp } from 'vue'
 
 import App from './App.vue'
@@ -10,8 +11,14 @@ import 'element-plus/es/components/message/style/css'
 import 'element-plus/es/components/message-box/style/css'
 
 const app = createApp(App)
+const pinia = createPinia()
 
-app.use(createPinia())
+pinia.use(createPersistedState({
+  storage: sessionStorage,
+  auto: true
+}))
+
+app.use(pinia)
 app.use(router)
 
 app.mount('#app')
