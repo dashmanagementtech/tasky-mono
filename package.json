@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc --build tsconfig.base.json",
     "build:shared": "yarn workspace @dash/shared build",
-    "build:backend": "prisma generate && yarn workspace @dash/backend build",
+    "build:backend": "yarn workspace @dash/backend build:nest",
     "build:frontend": "yarn workspace @dash/frontend build",
     "build:fe-staging": "yarn workspace @dash/frontend build-only",
     "start:frontend": "yarn workspace @dash/frontend dev",
