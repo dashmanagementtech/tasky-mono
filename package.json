@@ -3,6 +3,9 @@
   "workspaces": [
     "packages/*"
   ],
+  "engines": {
+    "node": "22.13.0"
+  },
   "nohoist": true,
   "scripts": {
     "build": "tsc --build tsconfig.base.json",
