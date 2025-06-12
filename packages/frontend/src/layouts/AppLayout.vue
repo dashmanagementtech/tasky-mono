@@ -22,7 +22,7 @@ function logUserOut() {
 
 <template>
   <section class="h-screen flex bg-white">
-    <nav class="w-[250px] h-screen bg-primary-50 p-5 flex flex-col justify-between">
+    <nav class="w-[250px] h-screen bg-white p-5 flex flex-col justify-between">
       <div class="">
         <div class="flex items-center justify-center pb-10">
           <Logo />
@@ -32,7 +32,7 @@ function logUserOut() {
             v-for="(link, key) in ROUTES"
             :to="link.uri"
             class="flex items-center gap-3 p-3 rounded hover:text-primary"
-            :class="{ 'bg-primary-100 text-primary font-semibold' : route.meta.parent === link.uri }"
+            :class="{ 'bg-primary-50 text-primary font-semibold' : route.meta.parent === link.uri }"
             :key
           >
             <component :is="link.icon" class="w-[24px]" />
@@ -46,7 +46,7 @@ function logUserOut() {
             v-for="(link, key) in COMMON"
             :to="link.uri"
             class="flex items-center gap-3 p-3 rounded hover:text-primary"
-            :class="{ 'bg-primary-100 text-primary font-semibold' : route.meta.parent === link.uri }"
+            :class="{ 'bg-primary-50 text-primary font-semibold' : route.meta.parent === link.uri }"
             :key
           >
             <component :is="link.icon" class="w-[24px]" />
