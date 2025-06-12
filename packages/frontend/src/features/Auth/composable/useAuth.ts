@@ -23,7 +23,15 @@ export function useAuth() {
   const logUserIn = async function (payload: ILoginData) {
     loading.value = true
     try {
-      const { user, auth } = await api.post('/login', payload)
+      const { user, auth, setPassword } = await api.post('/login', payload)
+
+      if (setPassword) {
+
+        appstore.setToken(auth.token)
+        authstore.setEmail(payload.email)
+        router.replace({ name: 'accept-invite' })
+        return
+      }
 
       appstore.setRefresh(auth.refresh)
       appstore.setToken(auth.token)
@@ -41,8 +49,24 @@ export function useAuth() {
     }
   }
 
+  const setPassword = async function (password: string) {
+    loading.value = true
+
+    try {
+      const { message } = await api.post('/set-password', { email: authstore.email, password })
+
+      ElMessage.success(message)
+      router.replace({ name: 'login' })
+    } catch (error: any | { message: string }) {
+      ElMessage.error(error.message)
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     logUserIn,
+    setPassword,
     loading,
   }
 }

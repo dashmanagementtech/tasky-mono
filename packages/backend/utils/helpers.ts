@@ -60,6 +60,26 @@ export async function findUserById(id: string) {
   }
 }
 
+export async function isEmailTaken(email: string): Promise<boolean> {
+  validateEmail(email);
+
+  const user = await prisma.users.findUnique({
+    where: {
+      email,
+    },
+    include: {
+      tasks: true,
+      watching: true,
+      projects: true,
+      createdProjects: true,
+    },
+  });
+
+  console.log(user)
+  
+  return Boolean(user);
+}
+
 export function bcryptSalt() {
   return bcrypt.genSaltSync(10);
 }

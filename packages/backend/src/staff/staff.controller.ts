@@ -1,10 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { StaffService } from './staff.service';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { UpdateStaffDto } from './dto/update-staff.dto';
-import { Public } from 'decorators/public.decorator';
+import { PaginationDto } from 'utils/pagination.dto';
 
-@Public()
 @Controller('staff')
 export class StaffController {
   constructor(private readonly staffService: StaffService) {}
@@ -15,8 +14,8 @@ export class StaffController {
   }
 
   @Get()
-  findAll() {
-    return this.staffService.findAll();
+  getSAllStaff(@Query() pagination: PaginationDto) {
+    return this.staffService.fetchAllStaff(pagination);
   }
 
   @Get(':id')

@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
+import { type FormInstance, type FormRules } from 'element-plus'
 import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
 // @ts-expect-error Type not declared
 import AppLogo from '@/shared/components/Logo.vue'
 // @ts-expect-error Type not declared
 import { validatePassword } from '@/shared/utils/helpers'
 import { useAuth } from '../composable/useAuth'
 
-const router = useRouter()
 const auth = useAuth()
 
 const loading = auth.loading
@@ -52,11 +50,9 @@ async function submit(formEl: FormInstance | undefined) {
   if (!formEl)
     return
 
-  await formEl.validate((valid, fields) => {
+  await formEl.validate(async (valid, fields) => {
     if (valid) {
-      console.warn({ data })
-      ElMessage.success('Welcome, please login to continue')
-      router.replace({ name: 'login' })
+      await auth.setPassword(data.password)
     }
     else {
       console.warn('fields error; ', fields)
