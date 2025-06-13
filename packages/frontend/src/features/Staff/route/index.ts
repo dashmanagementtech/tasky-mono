@@ -26,6 +26,20 @@ const staffRoutes: RouteRecordRaw[] = [
             component: () => import('../view/InviteStaff.vue'),
           }
         ]
+      },
+      {
+        path: 'view/:id',
+        component: () => import('../view/Index.vue'),
+        meta: {
+          side: true
+        },
+        children: [
+          {
+            path: '',
+            name: 'peek-staff',
+            component: () => import('../view/ViewStaff.vue')
+          }
+        ]
       }
     ]
   },

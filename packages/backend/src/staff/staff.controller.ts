@@ -14,13 +14,13 @@ export class StaffController {
   }
 
   @Get()
-  getSAllStaff(@Query() pagination: PaginationDto) {
+  getAllStaff(@Query() pagination: PaginationDto) {
     return this.staffService.fetchAllStaff(pagination);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.staffService.findOne(+id);
+  getStaffById(@Param('id') id: string) {
+    return this.staffService.fetchStaffById(id);
   }
 
   @Patch(':id')

@@ -1,6 +1,6 @@
-import { createApiConfig } from "@/config/api";
 import { ElMessage } from "element-plus";
 import { ref } from "vue";
+import { createApiConfig } from "@/config/api";
 
 const baseUrl = import.meta.env.VITE_BASE_URL
 
@@ -27,7 +27,7 @@ export function useStaff() {
 
   const fetchAllStaff = async ({ size, page }: { size: number, page: number }) => {
     loading.value = true
-    
+
     try {
       return await api.get(`?size=${size}&page=${page}`)
     } catch (error: any | { message: string }) {
@@ -37,11 +37,20 @@ export function useStaff() {
     }
   }
 
+  const fetchStaffById = async (id: string) => {
+    try {
+      return await api.get(`/${id}`)
+    } catch (error: any | { message: string }) {
+      ElMessage.error(error.message)
+    }
+  }
+
   return {
     loading,
     submitting,
     keyword,
     inviteStaff,
-    fetchAllStaff
+    fetchAllStaff,
+    fetchStaffById
   }
 }
