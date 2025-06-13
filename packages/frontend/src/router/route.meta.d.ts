@@ -6,6 +6,7 @@ declare module 'vue-router' {
     parent?: string,
     acl?: string[],
     protected?: boolean,
-    name?: string
+    name?: string,
+    side?: boolean
   }
 }
