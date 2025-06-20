@@ -7,6 +7,8 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { JwtStrategy } from 'strategy/jwt.strategy';
 import { StaffModule } from './staff/staff.module';
+import { ProjectsModule } from './projects/projects.module';
+import { ClientsModule } from './clients/clients.module';
 
 const ENV = process.env.NODE_ENV;
 
@@ -25,6 +27,8 @@ const ENV = process.env.NODE_ENV;
     ]),
     AuthModule,
     StaffModule,
+    ProjectsModule,
+    ClientsModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

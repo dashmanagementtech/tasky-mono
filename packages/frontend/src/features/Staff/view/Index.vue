@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { ArrowLeftBold, Search, View } from '@element-plus/icons-vue'
-import { computed, onMounted, reactive, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router';
+import { debounce } from 'lodash'
+import { computed, onMounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 import { useStaff } from '../composable/useStaff'
 
@@ -9,25 +10,23 @@ const route = useRoute()
 const router = useRouter()
 
 const usestaff = useStaff()
-const { keyword, loading } = usestaff
-
-const staff = ref([])
-const meta = reactive({
-  page: 1,
-  size: 10,
-  total: 0,
-})
+const { keyword, loading, meta, staff } = usestaff
 
 const isSidePage = computed(() => {
   return route.meta.side
 })
 
 async function getStaff() {
-  const { count, staff: _staff } = await usestaff.fetchAllStaff({ page: meta.page - 1, size: meta.size })
-
-  meta.total = count
-  staff.value = _staff
+  await usestaff.fetchAllStaff()
 }
+
+watch(keyword, () => {
+  debounce(async () => {
+    meta.page = 1
+    meta.size = 10
+    await usestaff.searchStaffByKeyword()
+  }, 500)()
+})
 
 onMounted(async () => {
   await getStaff();
@@ -64,25 +63,31 @@ onMounted(async () => {
           stripe
           :data="staff"
         >
-          <el-table-column prop="firstName" label="Name">
+          <el-table-column prop="id" label="Staff ID" width="150" show-overflow-tooltip>
+            <template #default="{ row }">
+              {{ row.id }}
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="firstName" label="Name" width="300">
             <template #default="{ row }">
               {{ row.firstName }} {{ row.lastName }}
             </template>
           </el-table-column>
 
-          <el-table-column prop="email" label="Email">
+          <el-table-column prop="email" label="Email" width="500" show-overflow-tooltip>
             <template #default="{ row }">
               {{ row.email }}
             </template>
           </el-table-column>
 
-          <el-table-column prop="firstName" label="Role">
+          <el-table-column prop="role" label="Role" width="100">
             <template #default="{ row }">
               {{ row.role }}
             </template>
           </el-table-column>
 
-          <el-table-column prop="firstName" label="Role">
+          <el-table-column label="Action">
             <template #default="{ row }">
               <div class="">
                 <router-link :to="{ name: 'peek-staff', params: { id: row.id } }">
@@ -100,7 +105,6 @@ onMounted(async () => {
             v-model:current-page="meta.page"
             v-model:page-size="meta.size"
             :page-sizes="[10, 20, 30, 40]"
-            :size="meta.size"
             background
             layout="sizes, prev, pager, next"
             :total="meta.total"

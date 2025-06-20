@@ -33,23 +33,29 @@ model Users {
   watching Tasks[]    @relation("userWatching")
   comments Comments[] @relation("comment")
 
+  gigs Projects[] @relation("client")
+
   projects        Projects_Users[]
-  createdProjects Projects[]
+  createdProjects Projects[]       @relation("projects")
 }
 
 model Projects {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  createdBy Users    @relation(fields: [uid], references: [id])
+  createdBy Users    @relation("projects", fields: [uid], references: [id])
 
   title       String
   description String?
   startDate   DateTime?
   endDate     DateTime?
-  uid         String
   status      String
+  type        String
 
-  users Projects_Users[]
+  uid         String // user that added that project
+  cuid        String // user that is the  client of that project
+
+  client Users            @relation("client", fields: [cuid], references: [id])
+  users  Projects_Users[]
 }
 
 model Sprints {
@@ -112,4 +118,5 @@ model Projects_Users {
 enum ROLE {
   ADMIN
   USER
+  CLIENT
 }

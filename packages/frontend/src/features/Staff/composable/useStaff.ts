@@ -1,5 +1,5 @@
 import { ElMessage } from "element-plus";
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import { createApiConfig } from "@/config/api";
 
 const baseUrl = import.meta.env.VITE_BASE_URL
@@ -7,6 +7,14 @@ const baseUrl = import.meta.env.VITE_BASE_URL
 const api = createApiConfig(`${baseUrl}/staff`)
 const loading = ref(false);
 const submitting = ref(false);
+
+const staff = ref([])
+const onestaff = ref()
+const meta = reactive({
+  page: 1,
+  size: 10,
+  total: 0,
+})
 
 export function useStaff() {
   const keyword = ref('')
@@ -25,11 +33,14 @@ export function useStaff() {
     }
   }
 
-  const fetchAllStaff = async ({ size, page }: { size: number, page: number }) => {
+  const fetchAllStaff = async () => {
     loading.value = true
 
     try {
-      return await api.get(`?size=${size}&page=${page}`)
+      const { count, staff: _staff } = await api.get(`?size=${meta.size}&page=${meta.page - 1}`)
+
+      meta.total = count
+      staff.value = _staff
     } catch (error: any | { message: string }) {
       ElMessage.error(error.message)
     } finally {
@@ -39,9 +50,28 @@ export function useStaff() {
 
   const fetchStaffById = async (id: string) => {
     try {
-      return await api.get(`/${id}`)
+      onestaff.value = undefined
+      const { staff } = await api.get(`/${id}`)
+
+      onestaff.value = staff
     } catch (error: any | { message: string }) {
       ElMessage.error(error.message)
+    }
+  }
+
+  const searchStaffByKeyword = async () => {
+    loading.value = true
+
+    try {
+      const { users, total } = await api.get(`/search?query=${keyword.value}&size=${meta.size}&page=${meta.page - 1}`)
+
+      staff.value = users
+      meta.total = total
+
+    } catch (error: any | { message: string }) {
+      ElMessage.error(error.message)
+    } finally {
+      loading.value = false
     }
   }
 
@@ -49,8 +79,12 @@ export function useStaff() {
     loading,
     submitting,
     keyword,
+    meta,
+    staff,
+    onestaff,
     inviteStaff,
     fetchAllStaff,
-    fetchStaffById
+    fetchStaffById,
+    searchStaffByKeyword
   }
 }

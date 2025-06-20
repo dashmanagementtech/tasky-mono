@@ -1,8 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { StaffService } from './staff.service';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { UpdateStaffDto } from './dto/update-staff.dto';
-import { PaginationDto } from 'utils/pagination.dto';
+import { PaginationDto, SearchDto } from 'utils/pagination.dto';
 
 @Controller('staff')
 export class StaffController {
@@ -16,6 +25,11 @@ export class StaffController {
   @Get()
   getAllStaff(@Query() pagination: PaginationDto) {
     return this.staffService.fetchAllStaff(pagination);
+  }
+
+  @Get('/search')
+  searchStaff(@Query() query: SearchDto) {
+    return this.staffService.searchStaffByQuery(query);
   }
 
   @Get(':id')

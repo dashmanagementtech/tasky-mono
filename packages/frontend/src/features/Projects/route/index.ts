@@ -14,6 +14,25 @@ const projectRoutes: RouteRecordRaw[] = [
         path: '',
         name: 'projects',
         component: () => import('../view/Index.vue'),
+      },
+      {
+        path: '',
+        component: () => import('../view/Index.vue'),
+        children: [
+          {
+            path: 'new',
+            name: 'new-project',
+            component: () => import('../view/NewProject.vue')
+          },
+          {
+            path: 'view/:id',
+            name: 'peek-project',
+            meta: {
+              side: true
+            },
+            component: () => import('../view/ViewProject.vue')
+          }
+        ]
       }
     ]
   },
