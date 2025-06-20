@@ -10,7 +10,7 @@ import { prisma } from 'config/prisma';
 import * as bcrypt from 'bcryptjs';
 
 import { bcryptSalt, isEmailTaken, findUserById } from 'utils/helpers';
-import { PaginationDto } from 'utils/pagination.dto';
+import { PaginationDto, SearchDto } from 'utils/pagination.dto';
 
 @Injectable()
 export class StaffService {
@@ -48,6 +48,11 @@ export class StaffService {
             img: true,
             role: true,
           },
+          where: {
+            role: {
+              not: 'CLIENT',
+            },
+          },
           orderBy: {
             createdAt: 'asc',
           },
@@ -75,7 +80,62 @@ export class StaffService {
       console.log(error);
       throw new InternalServerErrorException(error);
     }
-    return `This action returns a #${id} staff`;
+  }
+
+  async searchStaffByQuery(query: SearchDto) {
+    const page = parseInt(query.page, 10);
+    const size = parseInt(query.size, 10);
+    const skip = page * size;
+
+    try {
+      const [users, total] = await prisma.$transaction([
+        prisma.users.findMany({
+          where: {
+            OR: [
+              { firstName: { contains: query.query, mode: 'insensitive' } },
+              { lastName: { contains: query.query, mode: 'insensitive' } },
+              { username: { contains: query.query, mode: 'insensitive' } },
+              { email: { contains: query.query, mode: 'insensitive' } },
+              { id: { contains: query.query, mode: 'insensitive' } },
+            ],
+            role: {
+              not: 'CLIENT',
+            },
+          },
+          skip,
+          take: size,
+          select: {
+            id: true,
+            createdAt: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            img: true,
+            role: true,
+          },
+        }),
+        prisma.users.count({
+          where: {
+            OR: [
+              { firstName: { contains: query.query, mode: 'insensitive' } },
+              { lastName: { contains: query.query, mode: 'insensitive' } },
+              { username: { contains: query.query, mode: 'insensitive' } },
+              { email: { contains: query.query, mode: 'insensitive' } },
+              { id: { contains: query.query, mode: 'insensitive' } },
+            ],
+          },
+        }),
+      ]);
+
+      return {
+        users,
+        total,
+        totalPages: Math.ceil(total / size),
+      };
+    } catch (error) {
+      console.error(error);
+      throw new InternalServerErrorException(error);
+    }
   }
 
   update(id: number, updateStaffDto: UpdateStaffDto) {

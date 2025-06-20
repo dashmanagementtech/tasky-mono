@@ -8,14 +8,12 @@ const route = useRoute()
 const usestaff = useStaff()
 
 const loading = ref(false)
-const staff = ref()
+const { onestaff: staff } = usestaff
 
 async function getStaffById() {
   loading.value = true
   try {
-
-    const { staff: _staff } = await usestaff.fetchStaffById(route.params.id)
-    staff.value = _staff
+    await usestaff.fetchStaffById(route.params.id as string)
 
   } catch(error) {
     console.error(error)

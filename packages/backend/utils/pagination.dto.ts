@@ -1,9 +1,20 @@
-import { IsString } from "class-validator";
+import { IsNumberString, IsString } from 'class-validator';
 
 export class PaginationDto {
   @IsString()
-  page!: number
+  page!: number;
 
   @IsString()
-  size!: number
+  size!: number;
+}
+
+export class SearchDto {
+  @IsString()
+  query!: string;
+
+  @IsNumberString()
+  page!: string;
+
+  @IsNumberString()
+  size!: string;
 }
