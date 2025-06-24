@@ -16,6 +16,23 @@ const projectRoutes: RouteRecordRaw[] = [
         component: () => import('../view/Index.vue'),
       },
       {
+        path: ':id',
+        name: 'view-project',
+        component: () => import('../view/ViewProject.vue'),
+        children: [
+          {
+            path: 'add-sprint',
+            name: 'add-sprint',
+            component: () => import('../view/AddSprint.vue')
+          }
+        ]
+      },
+      {
+        path: 'edit/:id',
+        name: 'edit-project',
+        component: () => import('../view/EditProject.vue')
+      },
+      {
         path: '',
         component: () => import('../view/Index.vue'),
         children: [

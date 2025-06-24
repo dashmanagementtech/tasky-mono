@@ -31,7 +31,8 @@ export function createApiConfig(baseURL: string, { withAuth = true, customHeader
         // refresh token, and retry the request
         await getRefreshToken()
         request(url, method, options)
-      } else {
+      }
+      else {
         throw await response.json()
       }
     }
@@ -45,6 +46,7 @@ export function createApiConfig(baseURL: string, { withAuth = true, customHeader
     put: (url: string, body: any, options = {}) =>
       request(url, 'PUT', { ...options, body: JSON.stringify(body) }),
     delete: (url: string, options = {}) => request(url, 'DELETE', options),
+    patch: (url: string, body: any, options = {}) => request(url, 'PATCH', { ...options, body: JSON.stringify(body) }),
   }
 }
 

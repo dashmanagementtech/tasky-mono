@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import { ArrowLeftBold, Search, View } from '@element-plus/icons-vue'
+import { ArrowLeftBold, Edit, Search, View } from '@element-plus/icons-vue'
 import { debounce } from 'lodash'
 import { computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
+
+import { useDate } from '@/shared/composables/useDate';
+
 import { useProject } from '../composable/useProjects';
 
 const route = useRoute()
@@ -10,6 +13,8 @@ const router = useRouter()
 
 const useproject = useProject()
 const { keyword, loading, meta, projects } = useproject
+
+const { format } = useDate()
 
 const isSidePage = computed(() => {
   return route.meta.side
@@ -96,16 +101,22 @@ onMounted(async () => {
 
           <el-table-column prop="startDate" label="Start Date" width="200">
             <template #default="{ row }">
-              {{ row.startDate }}
+              {{ format(row.startDate, 'do MMM, yyy') }}
             </template>
           </el-table-column>
 
           <el-table-column label="Action">
             <template #default="{ row }">
-              <div class="">
+              <div class="flex gap-3">
                 <router-link :to="{ name: 'peek-project', params: { id: row.id } }">
                   <el-icon color="#69131b">
                     <View />
+                  </el-icon>
+                </router-link>
+
+                <router-link :to="{ name: 'edit-project', params: { id: row.id } }">
+                  <el-icon color="#69131b">
+                    <Edit />
                   </el-icon>
                 </router-link>
               </div>
@@ -134,7 +145,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div :class="{ 'border-l border-primary-50 px-5 w-1/4' : isSidePage }">
+    <div class="h-[90vh] overflow-auto" :class="{ 'border-l border-primary-50 bg-primary-50/10 p-5 w-1/4' : isSidePage }">
       <div v-if="isSidePage" class="text-[#fb2c36] flex items-center cursor-pointer mb-10" @click="router.back()">
         <el-icon color="#fb2c36">
           <ArrowLeftBold />
