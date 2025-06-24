@@ -32,7 +32,6 @@ export class SprintsService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
-    return `This action returns a #${id} sprint`;
   }
 
   update(id: number, updateSprintDto: UpdateSprintDto) {
