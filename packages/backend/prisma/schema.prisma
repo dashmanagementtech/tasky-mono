@@ -37,6 +37,7 @@ model Users {
 
   projects        Projects_Users[]
   createdProjects Projects[]       @relation("projects")
+  createdSprints  Sprints[]
 }
 
 model Projects {
@@ -51,22 +52,28 @@ model Projects {
   status      String
   type        String
 
-  uid         String // user that added that project
-  cuid        String // user that is the  client of that project
+  uid  String // user that added that project
+  cuid String // user that is the  client of that project
 
-  client Users            @relation("client", fields: [cuid], references: [id])
-  users  Projects_Users[]
+  client  Users            @relation("client", fields: [cuid], references: [id])
+  users   Projects_Users[]
+  sprints Sprints[]
 }
 
 model Sprints {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
+  createdBy Users    @relation(fields: [uid], references: [id])
 
+  title     String
   startDate DateTime
   endDate   DateTime
   goals     String   @db.VarChar(5000)
+  pid       String
+  uid       String
 
-  tasks Tasks[]
+  tasks   Tasks[]
+  project Projects @relation(fields: [pid], references: [id])
 }
 
 model Tasks {

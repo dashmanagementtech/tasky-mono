@@ -1,6 +1,6 @@
-import { ElMessage } from "element-plus";
-import { reactive, ref } from "vue";
-import { createApiConfig } from "@/config/api";
+import { ElMessage } from 'element-plus'
+import { reactive, ref } from 'vue'
+import { createApiConfig } from '@/config/api'
 
 const baseUrl = import.meta.env.VITE_BASE_URL
 
@@ -19,40 +19,78 @@ const meta = reactive({
 export function useProject() {
   const keyword = ref('')
 
+  const addStaffToProject = async (pid: string, staff: Record<string, string>, silent: boolean = false) => {
+    submitting.value = true
+    try {
+      const { message } = await api.patch(`/${pid}`, staff)
+
+      if (!silent) {
+        ElMessage.success(message)
+      }
+    }
+    catch (error: any | { message: string }) {
+      ElMessage.error(error.message)
+    }
+    finally {
+      submitting.value = false
+    }
+  }
+
   const createProject = async (payload: Record<string, any>) => {
     submitting.value = true
 
+    const { staff, ...project } = payload
+
     try {
-      const { message } = await api.post('/', {
-        ...payload,
-        startDate: new Date(payload.startDate).toISOString(),
-        endDate: new Date(payload.endDate).toISOString()
+      const { message, pid } = await api.post('/', {
+        ...project,
+        startDate: new Date(project.startDate).toISOString(),
+        endDate: new Date(project.endDate).toISOString(),
       })
 
+      if (staff.length !== 0) {
+        await addStaffToProject(pid, staff.map(({ uid, userRole }: Record<string, string>) => ({ uid, userRole })), true)
+      }
+
       ElMessage.success(message)
-    } catch (error: any | { message: string }) {
+    }
+    catch (error: any | { message: string }) {
       ElMessage.error(error.message)
-    } finally {
+    }
+    finally {
       submitting.value = false
     }
   }
 
   const fetchAllProjects = async () => {
-    loading.value = true
+    if (projects.value.length === 0) loading.value = true
 
     try {
       const { count, projects: _projects } = await api.get(`?size=${meta.size}&page=${meta.page - 1}`)
 
       meta.total = count
       projects.value = _projects
-    } catch (error: any | { message: string }) {
+    }
+    catch (error: any | { message: string }) {
       ElMessage.success(error.message)
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
 
-  const searchProjectByKeyword = async () => {}
+  const searchProjectByKeyword = async () => { }
+
+  const fetchProjectById = async (id: string) => {
+    try {
+      project.value = undefined
+      const { project: _project } = await api.get(`/${id}`)
+
+      project.value = _project
+    } catch (error: any | { message: string }) {
+      ElMessage.error(error.message)
+    }
+  }
 
   return {
     loading,
@@ -64,5 +102,7 @@ export function useProject() {
     createProject,
     fetchAllProjects,
     searchProjectByKeyword,
+    addStaffToProject,
+    fetchProjectById
   }
 }

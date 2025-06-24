@@ -60,14 +60,16 @@ function logUserOut() {
         </div>
       </div>
     </nav>
-    <section class="h-screen w-full bg-white border-l border-primary-50 p-5 overflow-x-hidden overflow-y-auto">
+    <section class="h-screen w-full bg-white border-l border-primary-50 p-5 overflow-hidden">
       <header class="sticky top-0 z-[20] bg-white border-b border-primary-50 pb-5 mb-5 flex justify-between items-center">
         <h1 class="capitalize text-2xl font-semibold">
           {{ route.meta.name }}
         </h1>
         <div class="" />
       </header>
-      <RouterView />
+      <div class="h-[90vh] overflow-hidden">
+        <RouterView />
+      </div>
     </section>
   </section>
 </template>

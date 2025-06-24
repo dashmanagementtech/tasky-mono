@@ -11,15 +11,18 @@ export class ProjectsService {
     const user = await getUserFromRequest(req);
 
     try {
-      await prisma.projects.create({
+      const { id } = await prisma.projects.create({
         data: {
           uid: user.id,
           status: 'TO_DO',
           ...createProjectDto,
         },
+        select: {
+          id: true,
+        },
       });
 
-      return { message: 'project created' };
+      return { message: 'project created', pid: id };
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -34,7 +37,7 @@ export class ProjectsService {
               select: {
                 firstName: true,
                 lastName: true,
-              }
+              },
             },
             users: {
               include: {
@@ -42,18 +45,18 @@ export class ProjectsService {
                   select: {
                     firstName: true,
                     lastName: true,
-                    img: true
-                  }
-                }
-              }
+                    img: true,
+                  },
+                },
+              },
             },
             createdBy: {
               select: {
                 firstName: true,
                 lastName: true,
-                img: true
-              }
-            }
+                img: true,
+              },
+            },
           },
           orderBy: {
             createdAt: 'asc',
@@ -71,15 +74,57 @@ export class ProjectsService {
     }
   }
 
-  findOne(id: number) {
+  async findOne(id: string) {
+    try {
+      const project = await prisma.projects.findUnique({
+        where: {
+          id
+        },
+        // orderBy: {},
+        include: {
+          client: {
+            select: {
+              firstName: true,
+              lastName: true
+            }
+          },
+          users: {
+            include: {
+              user: {
+                select: {
+                  firstName: true,
+                  lastName: true
+                }
+              }
+            }
+          }
+        }
+      })
+
+      return { project }
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
     return `This action returns a #${id} project`;
   }
 
-  update(id: number, updateProjectDto: UpdateProjectDto) {
-    return `This action updates a #${id} project`;
+  async addStaffToProject(id: string, updateProjectDto: UpdateProjectDto[]) {
+    try {
+      await prisma.projects_Users.createMany({
+        data: updateProjectDto.map((item) => ({
+          ...item,
+          pid: id,
+        })),
+      });
+
+      return { message: 'users added to project' };
+    } catch (error) {
+      console.log(error)
+      throw new InternalServerErrorException(error);
+    }
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} project`;
   }
 }

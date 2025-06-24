@@ -1,63 +1,65 @@
 export const USER_TYPES = [
   {
     label: 'Admin',
-    value: 'ADMIN'
+    value: 'ADMIN',
   },
   {
     label: 'User',
-    value: 'USER'
-  }
+    value: 'USER',
+  },
 ]
 
 export const PROJECT_TYPES = [
   {
     label: 'Wordpress',
-    value: 'WORD_PRESS'
+    value: 'WORD_PRESS',
   },
   {
     label: 'Custom Product',
-    value: 'CUSTOM_PRODUCT'
+    value: 'CUSTOM_PRODUCT',
   },
   {
     label: 'Custom Project',
-    value: 'CUSTOM_PROJECT'
-  }
+    value: 'CUSTOM_PROJECT',
+  },
 ]
 
 export const STATUS = [
   {
     label: 'Todo',
     value: 'TO_DO',
-    scope: ['project', 'task']
+    scope: ['project', 'task'],
   },
   {
     label: 'In Progress',
     value: 'IN_PROGRESS',
-    scope: ['project', 'task']
+    scope: ['project', 'task'],
   },
   {
     label: 'Awaiting Feedback',
     value: 'AWAITING_FEEDBACK',
-    scope: ['project', 'task']
+    scope: ['project', 'task'],
   },
   {
     label: 'Ready To Test',
     value: 'READY_TO_TEST',
-    scope: ['task']
+    scope: ['task'],
   },
   {
     label: 'Testing',
     value: 'TESTING',
-    scope: ['task']
+    scope: ['task'],
   },
   {
     label: 'Done',
     value: 'DONE',
-    scope: ['task']
+    scope: ['task'],
   },
   {
     label: 'Completed',
     value: 'COMPLETED',
-    scope: ['project']
-  }
+    scope: ['project'],
+  },
 ]
+
+export const PROJECT_USER_TYPES = ['Product Manager', 'Project Manager', 'Developer', 'Content Writer']
