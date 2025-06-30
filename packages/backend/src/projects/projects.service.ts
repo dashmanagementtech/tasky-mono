@@ -59,7 +59,7 @@ export class ProjectsService {
             },
           },
           orderBy: {
-            createdAt: 'asc',
+            createdAt: 'desc',
           },
           skip: Number(pagination.page * pagination.size),
           take: Number(pagination.size),
@@ -80,7 +80,6 @@ export class ProjectsService {
         where: {
           id
         },
-        // orderBy: {},
         include: {
           client: {
             select: {

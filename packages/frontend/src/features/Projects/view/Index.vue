@@ -67,9 +67,9 @@ onMounted(async () => {
           stripe
           :data="projects"
         >
-          <el-table-column prop="id" label="Project ID" width="150" show-overflow-tooltip>
+          <el-table-column prop="id" label="Date Added" width="150" show-overflow-tooltip>
             <template #default="{ row }">
-              {{ row.id }}
+              {{ format(row.createdAt, 'do MMM, yyy') }}
             </template>
           </el-table-column>
 
@@ -85,7 +85,7 @@ onMounted(async () => {
             </template>
           </el-table-column>
 
-          <el-table-column prop="cuid" label="Client" width="300">
+          <el-table-column prop="cuid" label="Client" width="200">
             <template #default="{ row }">
               {{ row.client.firstName }} {{ row.client.lastName }}
             </template>
@@ -99,9 +99,15 @@ onMounted(async () => {
             </template>
           </el-table-column>
 
-          <el-table-column prop="startDate" label="Start Date" width="200">
+          <el-table-column prop="startDate" label="Start Date" width="150">
             <template #default="{ row }">
               {{ format(row.startDate, 'do MMM, yyy') }}
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="endDate" label="End Date" width="150">
+            <template #default="{ row }">
+              {{ format(row.endDate, 'do MMM, yyy') }}
             </template>
           </el-table-column>
 
@@ -134,11 +140,11 @@ onMounted(async () => {
             :total="meta.total"
             @size-change="(size: any) => {
               meta.size = size;
-              getStaff();
+              getProjects();
             }"
             @current-change="(page: any) => {
               meta.page = page;
-              getStaff();
+              getProjects();
             }"
           />
       </div>
