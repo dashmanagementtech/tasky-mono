@@ -63,7 +63,8 @@ export function useProject() {
   }
 
   const fetchAllProjects = async () => {
-    if (projects.value.length === 0) loading.value = true
+    // if (projects.value.length === 0)
+    loading.value = true
 
     try {
       const { count, projects: _projects } = await api.get(`?size=${meta.size}&page=${meta.page - 1}`)
