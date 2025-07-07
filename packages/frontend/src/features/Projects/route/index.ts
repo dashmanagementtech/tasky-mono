@@ -24,13 +24,28 @@ const projectRoutes: RouteRecordRaw[] = [
             path: 'add-sprint',
             name: 'add-sprint',
             component: () => import('../view/AddSprint.vue')
-          }
+          },
+          {
+            path: ':sprintId/add-task',
+            name: 'add-task-to-sprint',
+            component: () => import('../view/AddTask.vue')
+          },
+          {
+            path: ':sprintId/:taskId',
+            name: 'view-sprint-task',
+            component: () => import('../view/ViewTask.vue')
+          },
+          {
+            path: 'add-task',
+            name: 'add-task',
+            component: () => import('../view/AddTask.vue')
+          },
+          {
+            path: 'edit',
+            name: 'edit-project',
+            component: () => import('../view/EditProject.vue')
+          },
         ]
-      },
-      {
-        path: 'edit/:id',
-        name: 'edit-project',
-        component: () => import('../view/EditProject.vue')
       },
       {
         path: '',

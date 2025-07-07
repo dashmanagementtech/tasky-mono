@@ -1,20 +1,22 @@
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from 'element-plus'
 import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import Modal from '@/shared/components/Modal.vue'
 
-import { useSprint } from '../composable/useSprints';
 import { validateRequiredField } from '@/shared/utils/helpers'
+import { useSprint } from '../composable/useSprints';
 
 const router = useRouter()
+const route = useRoute()
 const usesprint = useSprint()
 
 const { submitting } = usesprint
 const sprintForm = ref<FormInstance>()
 
 const sprint = reactive({
+  pid: route.params.id,
   title: '',
   startDate: '',
   endDate: '',
@@ -49,6 +51,7 @@ async function submitSprint(formEl: FormInstance | undefined) {
       return
     }
 
+    await usesprint.createSprint(sprint)
     router.back()
   })
 }

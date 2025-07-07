@@ -96,7 +96,7 @@ onMounted(() => {
           </div>
         </div>
 
-        <div class="mt-5">
+        <el-scrollbar class="mt-5 !h-[65vh] overflow-y-auto">
           <div v-if="tab === 'details'" :class="{ 'bg-gray-50/20 rounded-xl p-5': !isSide }">
             <div class="border-gray-100 border-b pb-3 mb-3">
               <h3 class="text-xl">
@@ -163,7 +163,7 @@ onMounted(() => {
           </div>
           <div v-else-if="tab === 'doc'" class="" />
           <ViewProjectSprints v-else />
-        </div>
+        </el-scrollbar>
       </div>
     </div>
   </section>

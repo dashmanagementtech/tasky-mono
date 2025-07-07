@@ -13,13 +13,15 @@ const sprint = ref()
 const meta = reactive({})
 
 export function useSprint() {
-  const fetchAllSprintsByProjectId = async (pid: string) => {
-    loading.value = true
+  const fetchAllSprintsByProjectId = async (pid: string, silent = false) => {
+    if (silent) {
+      loading.value = true
+    }
 
     try {
-      const { sprints: _sprints } = api.get(`/${pid}`) as any
+      const { sprints: _sprints } = await api.get(`/${pid}`) as any
 
-      sprint.value = _sprints
+      sprints.value = _sprints
     } catch (error: any | { message: string }) {
       ElMessage.error(error.message);
     } finally {
@@ -27,13 +29,69 @@ export function useSprint() {
     }
   }
 
+  const createSprint = async (payload: any) => {
+    submitting.value = true
+
+    try {
+      const { message } = await api.post('', payload)
+      await fetchAllSprintsByProjectId(payload.pid)
+
+      ElMessage.success(message)
+    } catch (error: any | { message: string }) {
+      ElMessage.error(error.message)
+    } finally {
+      submitting.value = false
+    }
+  }
+
+  const createTask = async (payload: any) => {
+    submitting.value = true
+
+    const { sid, ...data } = payload
+
+    try {
+      const { message, task } = await api.post(`/${sid}/sprint`, data)
+
+      ElMessage.success(message)
+      fetchAllSprintsByProjectId(task.pid, true)
+      return task
+    } catch (error: any | { message: string }) {
+      ElMessage.error(error.message)
+     } finally {
+      submitting.value = false
+    }
+  }
+
+  const findTaskById = async (id: string) => {
+    try {
+      return await api.get(`/task/${id}`)
+    } catch (error: any | { message: string }) {
+      ElMessage.error(error.message)
+    }
+  }
+
+  const updateTaskById = async (id: string, data: any) => {
+    try {
+      const task = await api.patch(`/task/${id}/status`, data)
+      await fetchAllSprintsByProjectId(task.task.sprint.pid)
+
+      return task
+    } catch (error: any | { message: string }) {
+      ElMessage.error(error.message)
+    }
+  }
+
   return {
     loading,
     submitting,
-    fetchAllSprintsByProjectId,
     sprint,
     sprints,
-    meta
+    meta,
+    fetchAllSprintsByProjectId,
+    createSprint,
+    createTask,
+    findTaskById,
+    updateTaskById
   }
 }
 

@@ -40,6 +40,11 @@ const staffRoutes: RouteRecordRaw[] = [
             component: () => import('../view/ViewStaff.vue')
           }
         ]
+      },
+      {
+        path: ':id',
+        name: 'view-staff',
+        component: () => import('../view/ViewStaff.vue')
       }
     ]
   },
