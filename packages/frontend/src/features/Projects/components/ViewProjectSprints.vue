@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useSprint } from '../composable/useSprints';
+
+import SprintCard from './SprintCard.vue';
 
 const route = useRoute()
 const usesprint = useSprint()
@@ -21,14 +23,14 @@ onMounted(() => {
 <template>
   <div class="bg-gray-50/20 rounded-xl p-5" v-loading="loading">
     <div class="border-gray-100 border-b pb-3 mb-3 flex items-center justify-between">
-      <h3 class="text-xl">
-        Project Sprints
-      </h3>
+      <h3 class="text-xl" />
 
       <div class="flex gap-4" v-if="!route.meta.side">
-        <el-button size="large">
-          Create Task
-        </el-button>
+        <router-link :to="{ name: 'add-task' }">
+          <el-button size="large">
+            Create Task
+          </el-button>
+        </router-link>
         <router-link :to="{ name: 'add-sprint' }">
           <el-button type="primary" size="large">
             Add Sprint
@@ -42,7 +44,7 @@ onMounted(() => {
     </div>
 
     <div v-else class="">
-      {{ sprints }}
+      <SprintCard v-for="(sprint, key) in sprints" :key :sprint />
     </div>
   </div>
 </template>

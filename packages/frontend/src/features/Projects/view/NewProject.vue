@@ -10,8 +10,8 @@ import { useStaff } from '@/features/Staff/composable/useStaff'
 import Modal from '@/shared/components/Modal.vue'
 
 import { PROJECT_TYPES, PROJECT_USER_TYPES } from '@/shared/utils/constants'
-import { useProject } from '../composable/useProjects'
 import { validateRequiredField } from '@/shared/utils/helpers'
+import { useProject } from '../composable/useProjects'
 
 const router = useRouter()
 const useproject = useProject()

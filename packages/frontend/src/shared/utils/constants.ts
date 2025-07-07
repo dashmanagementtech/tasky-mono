@@ -62,4 +62,13 @@ export const STATUS = [
   },
 ]
 
+export const TAG_TYPES = {
+  TO_DO: 'info',
+  IN_PROGRESS: 'warning',
+  AWAITING_FEEDBACK: 'danger',
+  READY_TO_TEST: 'warning',
+  TESTING: 'primary',
+  DONE: 'success'
+}
+
 export const PROJECT_USER_TYPES = ['Product Manager', 'Project Manager', 'Developer', 'Content Writer']
