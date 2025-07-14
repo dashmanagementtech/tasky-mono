@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ArrowLeftBold, Edit, Search, View } from '@element-plus/icons-vue'
+import { Edit, Search, View } from '@element-plus/icons-vue'
 import { debounce } from 'lodash'
 import { computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -140,12 +140,6 @@ onMounted(async () => {
     </div>
 
     <div class="h-[90vh] overflow-auto" :class="{ 'border-l border-primary-50 bg-primary-50/10 p-5 w-1/4': isSidePage }">
-      <div v-if="isSidePage" class="text-[#fb2c36] flex items-center cursor-pointer mb-10" @click="router.back()">
-        <el-icon color="#fb2c36">
-          <ArrowLeftBold />
-        </el-icon>
-        Back
-      </div>
       <RouterView :key="$route.fullPath" />
     </div>
   </section>
