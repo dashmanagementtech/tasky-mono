@@ -11,11 +11,6 @@ const projectRoutes: RouteRecordRaw[] = [
     },
     children: [
       {
-        path: '',
-        name: 'projects',
-        component: () => import('../view/Index.vue'),
-      },
-      {
         path: ':id',
         name: 'view-project',
         component: () => import('../view/ViewProject.vue'),
@@ -49,6 +44,7 @@ const projectRoutes: RouteRecordRaw[] = [
       },
       {
         path: '',
+        name: 'projects',
         component: () => import('../view/Index.vue'),
         children: [
           {

@@ -33,11 +33,29 @@ model Users {
   watching Tasks[]    @relation("userWatching")
   comments Comments[] @relation("comment")
 
-  gigs Projects[] @relation("client")
-
   projects        Projects_Users[]
   createdProjects Projects[]       @relation("projects")
   createdSprints  Sprints[]
+
+  clients Clients[] @relation("client")
+}
+
+model Clients {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  createdBy Users    @relation("client", fields: [uid], references: [id])
+
+  firstName   String
+  lastName    String
+  email       String @unique
+  phoneNumber String
+  company     String
+  industry    String
+  address     String @db.VarChar(5000)
+
+  uid String
+
+  projects Projects[] @relation("client")
 }
 
 model Projects {
@@ -55,7 +73,7 @@ model Projects {
   uid  String // user that added that project
   cuid String // user that is the  client of that project
 
-  client  Users            @relation("client", fields: [cuid], references: [id])
+  client  Clients          @relation("client", fields: [cuid], references: [id])
   users   Projects_Users[]
   sprints Sprints[]
 }

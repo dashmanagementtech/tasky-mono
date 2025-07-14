@@ -1,29 +1,21 @@
-import {
-  ConflictException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 
-import * as bcrypt from 'bcryptjs';
 import { prisma } from 'config/prisma';
-import { bcryptSalt, isEmailTaken } from 'utils/helpers';
+import { getUserFromRequest } from 'utils/helpers';
+import { PaginationDto } from 'utils/pagination.dto';
 
 @Injectable()
 export class ClientsService {
-  async create(createClientDto: CreateClientDto) {
+  async create(createClientDto: CreateClientDto, req: any) {
     try {
-      if (await isEmailTaken(createClientDto.email)) {
-        throw new ConflictException('user already exist');
-      }
+      const { id: uid } = await getUserFromRequest(req);
 
-      await prisma.users.create({
+      await prisma.clients.create({
         data: {
           ...createClientDto,
-          passwordHash: bcrypt.hashSync(createClientDto.email, bcryptSalt()),
-          username: createClientDto.email,
-          role: 'CLIENT',
+          uid,
         },
       });
 
@@ -31,21 +23,28 @@ export class ClientsService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
-
-    return 'This action adds a new client';
   }
 
   async searchClientByString({ query }: any) {
     try {
-      const clients = await prisma.users.findMany({
+      const clients = await prisma.clients.findMany({
         where: {
           OR: [
             { firstName: { contains: query, mode: 'insensitive' } },
             { lastName: { contains: query, mode: 'insensitive' } },
-            { username: { contains: query, mode: 'insensitive' } },
+            { phoneNumber: { contains: query, mode: 'insensitive' } },
             { id: { contains: query, mode: 'insensitive' } },
           ],
-          role: 'CLIENT',
+        },
+        include: {
+          projects: true,
+          createdBy: {
+            select: {
+              firstName: true,
+              lastName: true,
+              img: true,
+            },
+          },
         },
       });
 
@@ -55,12 +54,58 @@ export class ClientsService {
     }
   }
 
-  findAll() {
+  async findAll(pagination: PaginationDto) {
+    try {
+      const [clients, count] = await prisma.$transaction([
+        prisma.clients.findMany({
+          include: {
+            projects: true,
+            createdBy: {
+              select: {
+                firstName: true,
+                lastName: true,
+                img: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+          skip: Number(pagination.page * pagination.size),
+          take: Number(pagination.size),
+        }),
+        prisma.projects.count(),
+      ]);
+
+      return { count, clients };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
     return `This action returns all clients`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} client`;
+  async findOne(id: string) {
+    try {
+      const client = await prisma.clients.findUnique({
+        where: {
+          id
+        },
+        include: {
+          projects: true,
+          createdBy: {
+            select: {
+              firstName: true,
+              lastName: true,
+              img: true,
+            },
+          },
+        },
+      })
+
+      return { client }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   update(id: number, updateClientDto: UpdateClientDto) {

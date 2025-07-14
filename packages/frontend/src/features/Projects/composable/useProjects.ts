@@ -36,6 +36,24 @@ export function useProject() {
     }
   }
 
+  const fetchAllProjects = async () => {
+    // if (projects.value.length === 0)
+    loading.value = true
+
+    try {
+      const { count, projects: _projects } = await api.get(`?size=${meta.size}&page=${meta.page - 1}`)
+
+      meta.total = count
+      projects.value = _projects
+    }
+    catch (error: any | { message: string }) {
+      ElMessage.error(error.message)
+    }
+    finally {
+      loading.value = false
+    }
+  }
+
   const createProject = async (payload: Record<string, any>) => {
     submitting.value = true
 
@@ -52,31 +70,14 @@ export function useProject() {
         await addStaffToProject(pid, staff.map(({ uid, userRole }: Record<string, string>) => ({ uid, userRole })), true)
       }
 
-      ElMessage.success(message)
+      await fetchAllProjects()
+      ElMessage.success(message ?? 'Project created')
     }
     catch (error: any | { message: string }) {
       ElMessage.error(error.message)
     }
     finally {
       submitting.value = false
-    }
-  }
-
-  const fetchAllProjects = async () => {
-    // if (projects.value.length === 0)
-    loading.value = true
-
-    try {
-      const { count, projects: _projects } = await api.get(`?size=${meta.size}&page=${meta.page - 1}`)
-
-      meta.total = count
-      projects.value = _projects
-    }
-    catch (error: any | { message: string }) {
-      ElMessage.success(error.message)
-    }
-    finally {
-      loading.value = false
     }
   }
 

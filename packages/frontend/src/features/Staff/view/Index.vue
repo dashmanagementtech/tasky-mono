@@ -60,6 +60,7 @@ onMounted(async () => {
         <el-table
           style="width: 100%"
           v-loading="loading"
+          height="550"
           stripe
           :data="staff"
         >
