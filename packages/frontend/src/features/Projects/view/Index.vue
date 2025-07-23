@@ -2,11 +2,11 @@
 import { ArrowLeftBold, Edit, Search, View } from '@element-plus/icons-vue'
 import { debounce } from 'lodash'
 import { computed, onMounted, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router'
 
-import { useDate } from '@/shared/composables/useDate';
+import { useDate } from '@/shared/composables/useDate'
 
-import { useProject } from '../composable/useProjects';
+import { useProject } from '../composable/useProjects'
 
 const route = useRoute()
 const router = useRouter()
@@ -33,13 +33,13 @@ watch(keyword, () => {
 })
 
 onMounted(async () => {
-  await getProjects();
+  await getProjects()
 })
 </script>
 
 <template>
-  <section class="flex" :class="{ 'gap-5' : isSidePage }">
-    <div class="w-full transition ease-in-out" :class="{ '!w-3/4' : isSidePage }">
+  <section class="flex" :class="{ 'gap-5': isSidePage }">
+    <div class="w-full transition ease-in-out" :class="{ '!w-3/4': isSidePage }">
       <div class="flex items-center justify-between">
         <div class="flex gap-5">
           <router-link :to="{ name: 'new-project' }">
@@ -62,8 +62,9 @@ onMounted(async () => {
 
       <div class="mt-10 py-5 border-b border-primary-50 overflow-hidden">
         <el-table
-          style="width: 100%"
           v-loading="loading"
+          style="width: 100%"
+          height="550"
           stripe
           :data="projects"
         >
@@ -81,7 +82,7 @@ onMounted(async () => {
 
           <el-table-column prop="type" label="Type" width="150" show-overflow-tooltip>
             <template #default="{ row }">
-              {{ row.type.replace("_"," ") }}
+              {{ row.type.replace("_", " ") }}
             </template>
           </el-table-column>
 
@@ -147,11 +148,11 @@ onMounted(async () => {
               getProjects();
             }"
           />
-      </div>
+        </div>
       </div>
     </div>
 
-    <div class="h-[90vh] overflow-auto" :class="{ 'border-l border-primary-50 bg-primary-50/10 p-5 w-1/4' : isSidePage }">
+    <div class="h-[90vh] overflow-auto" :class="{ 'border-l border-primary-50 bg-primary-50/10 p-5 w-1/4': isSidePage }">
       <div v-if="isSidePage" class="text-[#fb2c36] flex items-center cursor-pointer mb-10" @click="router.back()">
         <el-icon color="#fb2c36">
           <ArrowLeftBold />

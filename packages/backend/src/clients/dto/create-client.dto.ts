@@ -9,4 +9,16 @@ export class CreateClientDto {
 
   @IsEmail()
   email!: string;
+
+  @IsString()
+  phoneNumber!: string;
+
+  @IsString()
+  company!: string;
+
+  @IsString()
+  industry!: string;
+
+  @IsString()
+  address!: string;
 }

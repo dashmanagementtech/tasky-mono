@@ -17,6 +17,22 @@ const meta = reactive({
 })
 
 export function useClient() {
+  const keyword = ref('')
+
+  const fetchAllClients = async () => {
+    loading.value = true
+
+    try {
+      const { count, clients: _clients } = await api.get(`?size=${meta.size}&page=${meta.page - 1}`)
+
+      meta.total = count
+      clients.value = _clients
+    } catch (error: any | { message: string }) {
+      ElMessage.error(error.message)
+    } finally {
+      loading.value = false
+    }
+  }
 
   const addNewClient = async function (payload: { firstName: string, lastName: string, email: string }) {
     submitting.value = true
@@ -24,6 +40,7 @@ export function useClient() {
     try {
       await api.post('/', payload)
 
+      await fetchAllClients()
       ElMessage.success('Client added')
     } catch (error: any | { message: string }) {
       ElMessage.error(error.message)
@@ -35,13 +52,25 @@ export function useClient() {
   const searchClient = async function (query: string) {
     loading.value = true
     try {
-      const { clients } = await api.get(`/search?query=${query}`)
+      const { clients: _clients } = await api.get(`/search?query=${query}`)
 
-      oneclient.value = clients
+      oneclient.value = _clients
+      clients.value = _clients
     } catch (error: any | { message: string }) {
       ElMessage.error(error.message);
     } finally {
       loading.value = false
+    }
+  }
+
+  const fetchClientById = async function (id: string) {
+    try {
+      oneclient.value = undefined
+      const { client } = await api.get(`/${id}`)
+
+      oneclient.value  = client
+    } catch (error: any | { message: string }) {
+      ElMessage.error(error.message)
     }
   }
 
@@ -51,7 +80,10 @@ export function useClient() {
     clients,
     oneclient,
     meta,
+    keyword,
     addNewClient,
-    searchClient
+    searchClient,
+    fetchAllClients,
+    fetchClientById
   }
 }

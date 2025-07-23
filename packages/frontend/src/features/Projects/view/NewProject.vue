@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from 'element-plus'
 import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router';
 
 import { useClient } from '@/features/Clients/composable/useClient'
 
@@ -13,6 +13,7 @@ import { PROJECT_TYPES, PROJECT_USER_TYPES } from '@/shared/utils/constants'
 import { validateRequiredField } from '@/shared/utils/helpers'
 import { useProject } from '../composable/useProjects'
 
+const route = useRoute()
 const router = useRouter()
 const useproject = useProject()
 const useclient = useClient()
@@ -25,14 +26,14 @@ const { submitting } = useproject
 const projectForm = ref<FormInstance>()
 
 const page = ref<'project' | 'client'>('project')
-const client = ref('')
+const client = ref(route.query.clientName.replaceAll('+', ' ') ?? '')
 
 const project = reactive({
   title: '',
   description: '',
   startDate: new Date(),
   endDate: new Date(),
-  cuid: '',
+  cuid: route.query.clientId ?? '',
   type: 'WORD_PRESS',
   staff: [] as { uid: string, userRole: string, keyword: string }[],
 })
@@ -124,7 +125,7 @@ async function submitProject(formEl: FormInstance | undefined) {
 
         <div class="grid grid-cols-3 gap-3">
           <el-form-item prop="startDate" label="Project Start Date">
-            <el-date-picker v-model="project.startDate" class="w-full" placeholder="Project start date" :disabled-date="disabledDate" />
+            <el-date-picker v-model="project.startDate" class="w-full" placeholder="Project start date" />
           </el-form-item>
 
           <el-form-item prop="endDate" label="Project End Date">
