@@ -125,7 +125,7 @@ async function submitProject(formEl: FormInstance | undefined) {
 
         <div class="grid grid-cols-3 gap-3">
           <el-form-item prop="startDate" label="Project Start Date">
-            <el-date-picker v-model="project.startDate" class="w-full" placeholder="Project start date" :disabled-date="disabledDate" />
+            <el-date-picker v-model="project.startDate" class="w-full" placeholder="Project start date" />
           </el-form-item>
 
           <el-form-item prop="endDate" label="Project End Date">

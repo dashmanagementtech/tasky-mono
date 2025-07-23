@@ -21,7 +21,7 @@ const tab = ref<'details' | 'doc' | 'sprint'>('details')
 const isSide = route.meta.side
 
 const productManager = computed(() => {
-  const pm = project.value.users.find(item => (item.userRole === 'Product Manager'))?.user
+  const pm = project.value.users.find(item => (item.userRole === 'Product Manager') || (item.userRole === 'Project Manager'))?.user
 
   return pm ?? 'N/A'
 })

@@ -42,15 +42,7 @@ const rules = reactive<FormRules<typeof client>>({
     validateRequiredField(client, 'lastName', callback)
     }, trigger: 'change'
   }],
-  phoneNumber: [{
-    validator: (value: any, rule: any, callback: any) => {
-    validateRequiredField(client, 'phoneNumber', callback)
-  }, trigger: 'change' }],
   company: [{
-    validator: (value: any, rule: any, callback: any) => {
-    validateRequiredField(client, 'lastName', callback)
-  }, trigger: 'change' }],
-  industry: [{
     validator: (value: any, rule: any, callback: any) => {
     validateRequiredField(client, 'lastName', callback)
   }, trigger: 'change' }],
