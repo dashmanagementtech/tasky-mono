@@ -26,7 +26,7 @@ const { submitting } = useproject
 const projectForm = ref<FormInstance>()
 
 const page = ref<'project' | 'client'>('project')
-const client = ref(route.query.clientName.replaceAll('+', ' ') ?? '')
+const client = ref((route.query.clientName as string)?.replace('+', ' ') ?? '')
 
 const project = reactive({
   title: '',
