@@ -8,10 +8,11 @@ import {
   Delete,
   Request,
   Query,
+  Put,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
-import { UpdateProjectDto } from './dto/update-project.dto';
+import { AddProjectDocumentDto, UpdateProjectDto } from './dto/update-project.dto';
 import { PaginationDto } from 'utils/pagination.dto';
 
 @Controller('projects')
@@ -31,6 +32,18 @@ export class ProjectsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.projectsService.findOne(id);
+  }
+
+  @Get(':id/documents')
+  findProjectDocuments(@Param('id') id: string) {
+    return this.projectsService.findProjectDocuments(id);
+  }
+
+  @Put(':id/document')
+  addDocument(@Param('id') id: string,
+    @Body() document: AddProjectDocumentDto,
+  ) {
+    return this.projectsService.addProjectDocuments(id, document);
   }
 
   @Patch(':id')

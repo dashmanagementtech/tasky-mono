@@ -10,6 +10,7 @@ const submitting = ref(false)
 
 const projects = ref([])
 const project = ref()
+const documents = ref([])
 const meta = reactive({
   page: 1,
   size: 10,
@@ -83,6 +84,26 @@ export function useProject() {
 
   const searchProjectByKeyword = async () => { }
 
+  const findDocumentsByProjectId = async (id: string) => {
+    try {
+      const { documents: doc } = await api.get(`/${id}/documents`)
+      documents.value = doc
+    } catch (error: any | { message: string }) {
+      ElMessage.error(error.message)
+    }
+  }
+
+  const addDocumentToProject = async (id: string, doc: { title: string, url: string }) => {
+    try {
+      const { message } = await api.put(`/${id}/document`, doc)
+
+      await findDocumentsByProjectId(id)
+      ElMessage.success(message)
+    } catch (error: any | { message: string }) {
+      ElMessage.error(error.message)
+    }
+  }
+
   const fetchProjectById = async (id: string) => {
     try {
       project.value = undefined
@@ -100,11 +121,14 @@ export function useProject() {
     keyword,
     projects,
     project,
+    documents,
     meta,
     createProject,
     fetchAllProjects,
     searchProjectByKeyword,
     addStaffToProject,
-    fetchProjectById
+    fetchProjectById,
+    findDocumentsByProjectId,
+    addDocumentToProject
   }
 }

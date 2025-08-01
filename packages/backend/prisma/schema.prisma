@@ -69,6 +69,7 @@ model Projects {
   endDate     DateTime?
   status      String
   type        String
+  documents   Json[]    @default([])
 
   uid  String // user that added that project
   cuid String // user that is the  client of that project

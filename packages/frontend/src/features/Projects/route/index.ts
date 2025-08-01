@@ -40,6 +40,11 @@ const projectRoutes: RouteRecordRaw[] = [
             name: 'edit-project',
             component: () => import('../view/EditProject.vue')
           },
+          {
+            path: 'add-document',
+            name: 'add-document',
+            component: () => import('../view/AddDcument.vue')
+          }
         ]
       },
       {
