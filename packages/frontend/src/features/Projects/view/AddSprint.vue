@@ -61,7 +61,7 @@ async function submitSprint(formEl: FormInstance | undefined) {
   <Modal heading="Add New Sprint" size="third" @close="$router.back()">
     <el-form ref="sprintForm" :model="sprint" :rules label-position="top" size="large">
       <el-form-item prop="title" label="Title">
-        <el-input v-model="sprint.title" placeholder="Project initialisation" />
+        <el-input v-model="sprint.title" placeholder="Sprint Title" />
       </el-form-item>
 
       <div class="grid gap-5 grid-cols-2">
@@ -73,8 +73,8 @@ async function submitSprint(formEl: FormInstance | undefined) {
         </el-form-item>
       </div>
 
-      <el-form-item prop="goals" label="Sprint Goals">
-        <el-input type="textarea" v-model="sprint.goals" placeholder="Sprint goals" />
+      <el-form-item prop="goals" label="Sprint Goal">
+        <el-input type="textarea" v-model="sprint.goals" placeholder="Sprint goal" />
       </el-form-item>
 
       <div class="flex justify-end mt-3 pt-5 border-t border-primary-50">

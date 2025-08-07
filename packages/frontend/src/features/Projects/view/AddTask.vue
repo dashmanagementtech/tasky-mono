@@ -101,13 +101,13 @@ async function submitTask(formEl: FormInstance | undefined) {
     <el-form ref="taskFormRef" :rules :model="task" label-position="top" size="large">
       <el-scrollbar class="!h-[40vh] overflow-y-auto">
       <el-form-item label="Sprint" prop="sid" v-loading="loading" v-if="route.params.sprintId === undefined">
-        <el-select v-model="task.sid" placeholder="">
-          <el-option v-for="(sprint, key) in sprints" :key :value="sprint.id" :label="sprint.title"></el-option>
+        <el-select v-model="task.sid" placeholder="Select a sprint">
+          <el-option v-for="(sprint, key) in sprints" :key :value="sprint.id" :label="sprint.title" />
         </el-select>
       </el-form-item>
 
       <el-form-item label="Title" prop="title">
-        <el-input v-model="task.title" placeholder="Add A Sprint Title" />
+        <el-input v-model="task.title" placeholder="Task Title" />
       </el-form-item>
 
       <el-form-item label="Description" prop="description">

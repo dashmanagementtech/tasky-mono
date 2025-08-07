@@ -5,4 +5,5 @@ export interface IRoutes {
   title: string
   icon: Component
   acl?: string[]
+  external?: boolean
 }
