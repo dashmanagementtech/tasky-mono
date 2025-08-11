@@ -37,7 +37,7 @@ export class StaffService {
 
   async fetchAllStaff(pagination: PaginationDto) {
     try {
-      const [staff, count] = await prisma.$transaction([
+      const [users, count] = await prisma.$transaction([
         prisma.users.findMany({
           select: {
             id: true,
@@ -47,6 +47,7 @@ export class StaffService {
             lastName: true,
             img: true,
             role: true,
+            passwordHash: true,
           },
           where: {
             role: {
@@ -61,6 +62,13 @@ export class StaffService {
         }),
         prisma.users.count(),
       ]);
+
+      const staff = users.map((user) => {
+        return {
+          ...user,
+          isActive: !bcrypt.compareSync(user.email, user.passwordHash),
+        };
+      });
 
       return { count, staff };
     } catch (error) {

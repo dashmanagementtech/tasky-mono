@@ -23,7 +23,7 @@ type AuthResponse<TUser extends Users = Users> = Promise<{
     token: string;
     refresh: string;
   };
-  setPassword: boolean
+  setPassword: boolean;
 }>;
 
 @Injectable()
@@ -35,7 +35,7 @@ export class AuthService {
       const _user = await findUserByEmail(data.email);
 
       const compareHash = bcrypt.compareSync(data.password, _user.passwordHash);
-      const setPassword = bcrypt.compareSync(data.email, _user.passwordHash)
+      const setPassword = bcrypt.compareSync(data.email, _user.passwordHash);
 
       if (!compareHash) throw new NotFoundException('wrong email/password');
 
@@ -56,37 +56,36 @@ export class AuthService {
 
   async checkEmail(email: string): Promise<boolean> {
     try {
-      const user = await findUserByEmail(email)
+      const user = await findUserByEmail(email);
 
-      if (user) throw new NotFoundException(false)
-      
-      return true
+      if (user) throw new NotFoundException(false);
+      return true;
     } catch (error) {
-      console.error(error)
+      console.error(error);
 
-      throw new InternalServerErrorException(error)
+      throw new InternalServerErrorException(error);
     }
   }
 
   async setPassword(data: AuthLoginDto) {
     try {
+      if (!(await isEmailTaken(data.email)))
+        throw new NotFoundException('user not found');
 
-      if (!(await isEmailTaken(data.email))) throw new NotFoundException('user not found')
-      
       await prisma.users.update({
         where: {
-          email: data.email
+          email: data.email,
         },
         data: {
-          passwordHash: bcrypt.hashSync(data.password, bcryptSalt())
-        }
-      })
+          passwordHash: bcrypt.hashSync(data.password, bcryptSalt()),
+        },
+      });
 
-      return { message: 'password updated, please login' }
+      return { message: 'password updated, please login' };
     } catch (error) {
-      console.error(error)
+      console.error(error);
 
-      throw new InternalServerErrorException(error)
+      throw new InternalServerErrorException(error);
     }
   }
 }
