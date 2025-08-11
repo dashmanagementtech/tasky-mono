@@ -1,6 +1,9 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
-import { UpdateProjectDto } from './dto/update-project.dto';
+import {
+  AddProjectDocumentDto,
+  UpdateProjectDto,
+} from './dto/update-project.dto';
 import { prisma } from 'config/prisma';
 import { getUserFromRequest } from 'utils/helpers';
 import { PaginationDto } from 'utils/pagination.dto';
@@ -78,33 +81,68 @@ export class ProjectsService {
     try {
       const project = await prisma.projects.findUnique({
         where: {
-          id
+          id,
         },
         include: {
           client: {
             select: {
               firstName: true,
-              lastName: true
-            }
+              lastName: true,
+            },
           },
           users: {
             include: {
               user: {
                 select: {
                   firstName: true,
-                  lastName: true
-                }
-              }
-            }
-          }
-        }
-      })
+                  lastName: true,
+                },
+              },
+            },
+          },
+        },
+      });
 
-      return { project }
+      return { project };
     } catch (error) {
-      throw new InternalServerErrorException(error)
+      throw new InternalServerErrorException(error);
     }
     return `This action returns a #${id} project`;
+  }
+
+  async findProjectDocuments(id: string) {
+    try {
+      return await prisma.projects.findUnique({
+        where: { id },
+        select: {
+          documents: true,
+        },
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async addProjectDocuments(id: string, doc: AddProjectDocumentDto) {
+    try {
+      const docs = await prisma.projects.findUnique({
+        where: { id },
+        select: { documents: true },
+      });
+
+      const documents = (docs?.documents as any[] | null) ?? []
+
+      await prisma.projects.update({
+        where: { id },
+        data: {
+          documents: [...documents, { ...doc, uploaded: new Date() }],
+        },
+      });
+
+      return { message: 'Document added to project' };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   async addStaffToProject(id: string, updateProjectDto: UpdateProjectDto[]) {
@@ -118,7 +156,7 @@ export class ProjectsService {
 
       return { message: 'users added to project' };
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw new InternalServerErrorException(error);
     }
   }

@@ -55,11 +55,11 @@ const rules = reactive<FormRules<typeof task>>({
 const selectedSprint = computed(() => sprints.value.find((sprint) => sprint.id === task.sid))
 
 function disabledStartDate(time: Date) {
-  return time.getTime() < new Date(selectedSprint.value?.startDate).getTime()
+  return time.getTime() < (new Date(selectedSprint.value?.startDate).getTime() || new Date().getTime())
 }
 
 function disabledDueDate(time: Date) {
-  return time.getTime() < new Date(task.startDate).getTime()
+  return time.getTime() < new Date(selectedSprint.value?.endDate).getTime()
 }
 
 async function searchStaff(query: string, cb: any) {
@@ -98,16 +98,16 @@ async function submitTask(formEl: FormInstance | undefined) {
 
 <template>
   <Modal heading="Add New Task" size="third" @close="router.back()">
-    <el-form ref="taskFormRef" :rules :model="task" label-position="top" size="large">      
+    <el-form ref="taskFormRef" :rules :model="task" label-position="top" size="large">
       <el-scrollbar class="!h-[40vh] overflow-y-auto">
       <el-form-item label="Sprint" prop="sid" v-loading="loading" v-if="route.params.sprintId === undefined">
-        <el-select v-model="task.sid" placeholder="">
-          <el-option v-for="(sprint, key) in sprints" :key :value="sprint.id" :label="sprint.title"></el-option>
+        <el-select v-model="task.sid" placeholder="Select a sprint">
+          <el-option v-for="(sprint, key) in sprints" :key :value="sprint.id" :label="sprint.title" />
         </el-select>
       </el-form-item>
 
       <el-form-item label="Title" prop="title">
-        <el-input v-model="task.title" placeholder="Add A Sprint Title" />
+        <el-input v-model="task.title" placeholder="Task Title" />
       </el-form-item>
 
       <el-form-item label="Description" prop="description">

@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router'
 
 import { useDate } from '@/shared/composables/useDate'
 
+import ViewProjectDocs from '../components/ViewProjectDocs.vue'
 import ViewProjectSprints from '../components/ViewProjectSprints.vue'
 import { useProject } from '../composable/useProjects'
 
@@ -43,8 +44,8 @@ async function getProjectById() {
 onMounted(() => {
   getProjectById()
 
-  if (!isSide && ['details','doc','sprint'].includes((route.name as string).split("-")[1] as string)) {
-    tab.value = (route.name as string).split("-")[1] as 'details' | 'doc' | 'sprint'
+  if (!isSide && ['details', 'doc', 'sprint'].includes((route.name as string).split('-')[1] as string)) {
+    tab.value = (route.name as string).split('-')[1] as 'details' | 'doc' | 'sprint'
   }
 })
 </script>
@@ -85,13 +86,22 @@ onMounted(() => {
 
       <div class="mt-10">
         <div v-if="!isSide" class="grid gap-10 grid-cols-3 bg-gray-50 p-2 rounded">
-          <div class="text-center p-4 rounded cursor-pointer ease-in-out transition-all" :class="{ 'bg-white': tab === 'details' }" @click="tab = 'details'">
+          <div
+            class="text-center p-4 rounded cursor-pointer ease-in-out transition-all"
+            :class="{ 'bg-white': tab === 'details' }" @click="tab = 'details'"
+          >
             Project Details
           </div>
-          <div class="text-center p-4 rounded cursor-pointer ease-in-out transition-all" :class="{ 'bg-white': tab === 'doc' }" @click="tab = 'doc'">
+          <div
+            class="text-center p-4 rounded cursor-pointer ease-in-out transition-all"
+            :class="{ 'bg-white': tab === 'doc' }" @click="tab = 'doc'"
+          >
             Documents
           </div>
-          <div class="text-center p-4 rounded cursor-pointer ease-in-out transition-all" :class="{ 'bg-white': tab === 'sprint' }" @click="tab = 'sprint'">
+          <div
+            class="text-center p-4 rounded cursor-pointer ease-in-out transition-all"
+            :class="{ 'bg-white': tab === 'sprint' }" @click="tab = 'sprint'"
+          >
             Sprints
           </div>
         </div>
@@ -161,7 +171,7 @@ onMounted(() => {
               </p>
             </div>
           </div>
-          <div v-else-if="tab === 'doc'" class="" />
+          <ViewProjectDocs v-else-if="tab === 'doc'" />
           <ViewProjectSprints v-else />
         </el-scrollbar>
       </div>

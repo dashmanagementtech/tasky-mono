@@ -22,9 +22,7 @@ onMounted(() => {
 
 <template>
   <div class="bg-gray-50/20 rounded-xl p-5" v-loading="loading">
-    <div class="border-gray-100 border-b pb-3 mb-3 flex items-center justify-between">
-      <h3 class="text-xl" />
-
+    <div class="border-gray-100 border-b pb-3 mb-3 flex items-center justify-end">
       <div class="flex gap-4" v-if="!route.meta.side">
         <router-link :to="{ name: 'add-task' }">
           <el-button size="large">

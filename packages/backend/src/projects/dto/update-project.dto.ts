@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateProjectDto } from './create-project.dto';
-import { IsString } from 'class-validator';
+import { IsString, IsUrl } from 'class-validator';
 
 export class UpdateProjectDto extends PartialType(CreateProjectDto) {
   @IsString()
@@ -8,4 +8,12 @@ export class UpdateProjectDto extends PartialType(CreateProjectDto) {
 
   @IsString()
   userRole!: string;
+}
+
+export class AddProjectDocumentDto {
+  @IsString()
+  title!: string;
+
+  @IsUrl()
+  url!: string;
 }
