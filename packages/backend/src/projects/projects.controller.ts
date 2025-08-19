@@ -42,6 +42,11 @@ export class ProjectsController {
     return this.projectsService.upcomingTasks(req);
   }
 
+  @Get('/my-tasks')
+  getUserTasks(@Request() req) {
+    return this.projectsService.getUserTasks(req);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.projectsService.findOne(id);

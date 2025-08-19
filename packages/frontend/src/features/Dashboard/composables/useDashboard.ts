@@ -18,6 +18,11 @@ const upcoming = ref({
   loading: true
 })
 
+const tasks = ref({
+  items: [],
+  loading: true
+})
+
 export function useDashoard() {
   const loadTasksAnalytics = async () => {
     tasksAnalytics.value.loading = true
@@ -47,10 +52,25 @@ export function useDashoard() {
     }
   }
 
+  const loadTasks = async () => {
+    tasks.value.loading = true
+    try {
+      const { tasks: allTasks } = await api.get("/projects/my-tasks")
+
+      tasks.value.items = allTasks
+    } catch (error) {
+      console.error(error)
+    } finally {
+      tasks.value.loading = false
+    }
+  }
+
   return {
     loadTasksAnalytics,
     loadUpcomingTasks,
+    loadTasks,
     upcoming: readonly(upcoming),
-    tasks: readonly(tasksAnalytics)
+    tasksAnalytics: readonly(tasksAnalytics),
+    tasks: readonly(tasks)
   }
 }

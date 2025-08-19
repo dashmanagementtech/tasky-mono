@@ -235,6 +235,33 @@ export class ProjectsService {
     }
   }
 
+  async getUserTasks(req: any) {
+    try {
+      const user = await getUserFromRequest(req);
+
+      const tasks = await prisma.tasks.findMany({
+        where: {
+          uid: user.id,
+        },
+        include: {
+          sprint: {
+            include: {
+              project: {
+                select: {
+                  title: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      return { tasks };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
   remove(id: string) {
     return `This action removes a #${id} project`;
   }

@@ -11,11 +11,13 @@ const { user } = useAuthStore()
 const { format } = useDate()
 
 const tasks = computed(() => usedashboard.tasks.value)
+const tasksAnalytics = computed(() => usedashboard.tasksAnalytics.value)
 const upcoming = computed(() => usedashboard.upcoming.value)
 
 onMounted(async () => {
   usedashboard.loadTasksAnalytics()
   usedashboard.loadUpcomingTasks()
+  usedashboard.loadTasks()
 })
 </script>
 
@@ -30,10 +32,10 @@ onMounted(async () => {
       </p>
     </div>
 
-    <div v-loading="tasks.loading" class="my-10 grid grid-cols-4 gap-5">
+    <div v-loading="tasksAnalytics.loading" class="my-10 grid grid-cols-4 gap-5">
       <div class="rounded-2xl border border-gray-50 p-5 flex justify-between">
         <div class="">
-          <h2 class="text-lg font-semibold">{{ tasks.total }}</h2>
+          <h2 class="text-lg font-semibold">{{ tasksAnalytics.total }}</h2>
           <p class="opacity-50">Total Tasks</p>
         </div>
         <div class="inline-flex items-center justify-center py-3 px-3.5 rounded-full bg-primary-50">
@@ -45,7 +47,7 @@ onMounted(async () => {
 
       <div class="rounded-2xl border border-gray-50 p-5 flex justify-between">
         <div class="">
-          <h2 class="text-lg font-semibold">{{ tasks.active }}</h2>
+          <h2 class="text-lg font-semibold">{{ tasksAnalytics.active }}</h2>
           <p class="opacity-50">Active Tasks</p>
         </div>
         <div class="inline-flex items-center justify-center py-3 px-3.5 rounded-full bg-[#2563EB]/20">
@@ -60,7 +62,7 @@ onMounted(async () => {
 
       <div class="rounded-2xl border border-gray-50 p-5 flex justify-between">
         <div class="">
-          <h2 class="text-lg font-semibold">{{ tasks.completed }}</h2>
+          <h2 class="text-lg font-semibold">{{ tasksAnalytics.completed }}</h2>
           <p class="opacity-50">Completed Tasks</p>
         </div>
         <div class="inline-flex items-center justify-center py-3 px-3.5 rounded-full bg-[#06962F]/20">
@@ -84,7 +86,7 @@ onMounted(async () => {
 
       <div class="rounded-2xl border border-gray-50 p-5 flex justify-between">
         <div class="">
-          <h2 class="text-lg font-semibold">{{ tasks.productivity }}%</h2>
+          <h2 class="text-lg font-semibold">{{ tasksAnalytics.productivity }}%</h2>
           <p class="opacity-50">Productivity</p>
         </div>
         <div class="inline-flex items-center justify-center py-3 px-3.5 rounded-full bg-[#9747FF]/20">
@@ -155,6 +157,53 @@ onMounted(async () => {
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="flex flex-col gap-5">
+      <h2 class="font-semibold text-lg">Your Tasks</h2>
+      <el-table v-loading="tasks.loading" style="width: 100%;" height="500" stripe :data="tasks.items">
+        <el-table-column prop="createdAt" label="Date Added" width="150">
+          <template #default="{ row }">
+            {{ format(row.createdAt, 'do MMM, yyy') }}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="title" label="Title" width="150">
+          <template #default="{ row }">
+            <router-link
+              :to="{ name: 'view-sprint-task', params: { taskId: row.id, sprintId: row.sid, id: row.sprint.pid } }"
+              class="text-blue-500 underline">
+              {{ row.title }}
+            </router-link>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="description" label="Description" width="350" show-overflow-tooltip>
+          <template #default="{ row }">
+            {{ row.description }}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="startDate" label="Start Date" width="150">
+          <template #default="{ row }">
+            {{ format(row.startDate, 'do MMM, yyy') }}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="dueDate" label="Due Date" width="150">
+          <template #default="{ row }">
+            {{ format(row.dueDate, 'do MMM, yyy') }}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="status" label="Status">
+          <template #default="{ row }">
+            <el-tag class="capitalize">
+              {{ row.status.replace("_", " ").toLowerCase() }}
+            </el-tag>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
   </section>
 </template>
