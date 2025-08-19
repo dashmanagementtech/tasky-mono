@@ -10,7 +10,6 @@ import { StaffModule } from './staff/staff.module';
 import { ProjectsModule } from './projects/projects.module';
 import { ClientsModule } from './clients/clients.module';
 import { SprintsModule } from './sprints/sprints.module';
-import { LogsModule } from './logs/logs.module';
 
 const ENV = process.env.NODE_ENV;
 
@@ -32,7 +31,6 @@ const ENV = process.env.NODE_ENV;
     ProjectsModule,
     ClientsModule,
     SprintsModule,
-    LogsModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
