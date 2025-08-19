@@ -161,6 +161,80 @@ export class ProjectsService {
     }
   }
 
+  async projectAnalytics(req: any) {
+    try {
+      const user = await getUserFromRequest(req);
+
+      const [total, active, completed] = await Promise.all([
+        prisma.tasks.count({
+          where: {
+            uid: user.id,
+          },
+        }),
+        prisma.tasks.count({
+          where: {
+            uid: user.id,
+            status: 'IN_PROGRESS',
+          },
+        }),
+        prisma.tasks.count({
+          where: {
+            uid: user.id,
+            status: 'DONE',
+          },
+        }),
+      ]);
+
+      return {
+        total,
+        completed,
+        active,
+        productivity: (completed / total) * 100,
+      };
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async upcomingTasks(req: any) {
+    try {
+      const user = await getUserFromRequest(req);
+
+      const deadlines = await prisma.tasks.findMany({
+        where: {
+          uid: user.id,
+          dueDate: {
+            gte: new Date(),
+          },
+          NOT: {
+            status: 'DONE',
+          },
+        },
+        include: {
+          sprint: {
+            include: {
+              project: {
+                select: {
+                  title: true,
+                  id: true
+                },
+              }
+            },
+          },
+        },
+        orderBy: {
+          dueDate: 'asc',
+        },
+        take: 3,
+      });
+
+      return { deadlines };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
   remove(id: string) {
     return `This action removes a #${id} project`;
   }

@@ -12,7 +12,10 @@ import {
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
-import { AddProjectDocumentDto, UpdateProjectDto } from './dto/update-project.dto';
+import {
+  AddProjectDocumentDto,
+  UpdateProjectDto,
+} from './dto/update-project.dto';
 import { PaginationDto } from 'utils/pagination.dto';
 
 @Controller('projects')
@@ -27,6 +30,16 @@ export class ProjectsController {
   @Get()
   findAll(@Query() query: PaginationDto) {
     return this.projectsService.fetchAllProjects(query);
+  }
+
+  @Get('/analytics')
+  getAnalytics(@Request() req) {
+    return this.projectsService.projectAnalytics(req);
+  }
+
+  @Get('/upcoming')
+  getUpcomingTasks(@Request() req) {
+    return this.projectsService.upcomingTasks(req);
   }
 
   @Get(':id')
