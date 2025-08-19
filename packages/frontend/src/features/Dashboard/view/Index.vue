@@ -103,7 +103,7 @@ onMounted(async () => {
       <div class="rounded-2xl bg-white flex flex-col gap-5">
         <h2 class="font-semibold text-lg">Upcoming Deadlines</h2>
         <div v-loading="upcoming.loading" class="flex flex-col gap-3">
-          <template v-if="upcoming.items.length !== 0">
+          <template v-if="upcoming?.items?.length !== 0">
             <div v-for="(task, key) in upcoming.items" :key
               class="rounded-xl border border-gray-50 flex gap-2 items-start justify-between p-5">
               <div class="flex gap-3 items-start">
