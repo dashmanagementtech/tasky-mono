@@ -28,8 +28,8 @@ export class ProjectsController {
   }
 
   @Get()
-  findAll(@Query() query: PaginationDto) {
-    return this.projectsService.fetchAllProjects(query);
+  findAll(@Query() query: PaginationDto, @Request() req) {
+    return this.projectsService.fetchAllProjects(query, req);
   }
 
   @Get('/analytics')

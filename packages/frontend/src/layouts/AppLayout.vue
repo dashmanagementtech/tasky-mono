@@ -1,14 +1,19 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
+import { useAuthStore } from '@/features/Auth/store/useAuthStore'
 import Logo from '@/shared/components/Logo.vue'
 
 import { resetAllStores } from '@/stores/resetAllStores'
 import LogoutIcon from './icons/LogoutIcon.vue'
-
 import { COMMON, ROUTES } from './utils/constants'
 
 const route = useRoute()
 const router = useRouter()
+const userstore = useAuthStore()
+
+const userRole = computed(() => userstore.user.role)
 
 function logUserOut() {
   try {
@@ -30,23 +35,21 @@ function logUserOut() {
         </div>
         <div class="flex flex-col gap-2">
           <template v-for="(link, key) in ROUTES" :key>
-            <router-link
-              v-if="!link.external" :to="link.uri"
-              class="flex items-center gap-3 p-3 rounded hover:text-primary"
-              :class="{ 'bg-primary-50 text-primary font-semibold': route.meta.parent === link.uri }"
-            >
-              <component :is="link.icon" class="w-[24px]" />
-              {{ link.title }}
-            </router-link>
+            <template v-if="link.acl && link.acl.includes(userRole)">
+              <router-link
+                v-if="!link.external" :to="link.uri"
+                class="flex items-center gap-3 p-3 rounded hover:text-primary"
+                :class="{ 'bg-primary-50 text-primary font-semibold': route.meta.parent === link.uri }"
+              >
+                <component :is="link.icon" class="w-[24px]" />
+                {{ link.title }}
+              </router-link>
 
-            <a
-              v-else :href="link.uri"
-              class="flex items-center gap-3 p-3 rounded hover:text-primary"
-              target="_blank"
-            >
-              <component :is="link.icon" class="w-[24px]" />
-              {{ link.title }}
-            </a>
+              <a v-else :href="link.uri" class="flex items-center gap-3 p-3 rounded hover:text-primary" target="_blank">
+                <component :is="link.icon" class="w-[24px]" />
+                {{ link.title }}
+              </a>
+            </template>
           </template>
         </div>
       </div>
