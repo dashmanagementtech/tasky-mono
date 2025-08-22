@@ -24,7 +24,7 @@ const sprint = reactive({
 })
 
 function disabledDate(time: Date) {
-  return time.getTime() < Date.now()
+  return time.getTime() < new Date(sprint.startDate).getTime()
 }
 
 const rules = reactive<FormRules<typeof sprint>>({
@@ -66,7 +66,7 @@ async function submitSprint(formEl: FormInstance | undefined) {
 
       <div class="grid gap-5 grid-cols-2">
         <el-form-item prop="startDate" label="Start Date">
-          <el-date-picker v-model="sprint.startDate" class="w-full" placeholder="Sprint start date" :disabled-date="disabledDate" />
+          <el-date-picker v-model="sprint.startDate" class="w-full" placeholder="Sprint start date" />
         </el-form-item>
         <el-form-item prop="endDate" label="End Date">
           <el-date-picker v-model="sprint.endDate" class="w-full" placeholder="Sprint end date" :disabled-date="disabledDate" />
