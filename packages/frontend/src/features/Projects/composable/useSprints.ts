@@ -1,6 +1,6 @@
-import { ElMessage } from "element-plus"
-import { reactive, ref } from "vue"
-import { createApiConfig } from "@/config/api"
+import { ElMessage } from 'element-plus'
+import { reactive, ref } from 'vue'
+import { createApiConfig } from '@/config/api'
 
 const baseUrl = import.meta.env.VITE_BASE_URL
 
@@ -19,12 +19,14 @@ export function useSprint() {
     }
 
     try {
-      const { sprints: _sprints } = await api.get(`/${pid}`) as any
+      const { sprints: _sprints } = await api.get(`/project/${pid}`) as any
 
       sprints.value = _sprints
-    } catch (error: any | { message: string }) {
-      ElMessage.error(error.message);
-    } finally {
+    }
+    catch (error: any | { message: string }) {
+      ElMessage.error(error.message)
+    }
+    finally {
       loading.value = false
     }
   }
@@ -37,9 +39,11 @@ export function useSprint() {
       await fetchAllSprintsByProjectId(payload.pid)
 
       ElMessage.success(message)
-    } catch (error: any | { message: string }) {
+    }
+    catch (error: any | { message: string }) {
       ElMessage.error(error.message)
-    } finally {
+    }
+    finally {
       submitting.value = false
     }
   }
@@ -55,9 +59,11 @@ export function useSprint() {
       ElMessage.success(message)
       fetchAllSprintsByProjectId(task.pid, true)
       return task
-    } catch (error: any | { message: string }) {
+    }
+    catch (error: any | { message: string }) {
       ElMessage.error(error.message)
-     } finally {
+    }
+    finally {
       submitting.value = false
     }
   }
@@ -65,7 +71,8 @@ export function useSprint() {
   const findTaskById = async (id: string) => {
     try {
       return await api.get(`/task/${id}`)
-    } catch (error: any | { message: string }) {
+    }
+    catch (error: any | { message: string }) {
       ElMessage.error(error.message)
     }
   }
@@ -76,8 +83,30 @@ export function useSprint() {
       await fetchAllSprintsByProjectId(task.task.sprint.pid)
 
       return task
-    } catch (error: any | { message: string }) {
+    }
+    catch (error: any | { message: string }) {
       ElMessage.error(error.message)
+    }
+  }
+
+  const findSprintById = async (id: string) => {
+    try {
+      return await api.get(`/${id}`)
+    }
+    catch (error: any | { message: string }) {
+      ElMessage.error(error.message)
+      throw error
+    }
+  }
+
+  const endSprintById = async (id: string, form: any) => {
+    try {
+      const { message, pid } = await api.patch(`/${id}/sprint`, form)
+      ElMessage.success(message)
+      await fetchAllSprintsByProjectId(pid)
+    } catch (error: any | { message: any }) {
+      ElMessage.error(error.message)
+      throw error
     }
   }
 
@@ -91,7 +120,8 @@ export function useSprint() {
     createSprint,
     createTask,
     findTaskById,
-    updateTaskById
+    updateTaskById,
+    findSprintById,
+    endSprintById
   }
 }
-

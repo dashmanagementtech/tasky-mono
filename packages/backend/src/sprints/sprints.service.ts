@@ -1,5 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { CreateSprintDto, CreateSprintTaskDto } from './dto/create-sprint.dto';
+import { CreateSprintDto, CreateSprintTaskDto, EndSprintDto } from './dto/create-sprint.dto';
 import { UpdateSprintDto } from './dto/update-sprint.dto';
 import { prisma } from 'config/prisma';
 import { getUserFromRequest } from 'utils/helpers';
@@ -27,7 +27,7 @@ export class SprintsService {
     return `This action returns all sprints`;
   }
 
-  async findOne(pid: string) {
+  async findSprintsByProjectId(pid: string) {
     try {
       const sprints = await prisma.sprints.findMany({
         where: {
@@ -58,6 +58,37 @@ export class SprintsService {
       });
 
       return { sprints };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async findSprintById(id: string) {
+    try {
+      const sprint = await prisma.sprints.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          tasks: {
+            where: {
+              status: {
+                in: ['IN_PROGRESS', 'TO_DO', 'AWAITING_FEEDBACK'],
+              },
+            },
+            include: {
+              assignedTo: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                },
+              }
+            },
+          },
+        },
+      });
+
+      return { sprint };
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -159,6 +190,15 @@ export class SprintsService {
             status: 'IN_PROGRESS',
           },
         });
+
+        await prisma.sprints.update({
+          where: {
+            id: task.sprint.id,
+          },
+          data: {
+            started: true,
+          },
+        });
       }
 
       return { task };
@@ -188,16 +228,51 @@ export class SprintsService {
         include: {
           sprint: {
             select: {
-              pid: true
+              pid: true,
             },
           },
         },
       });
 
-      return { message: 'Task added to sprint', task: { id, sid, pid: sprint.pid } };
+      return {
+        message: 'Task added to sprint',
+        task: { id, sid, pid: sprint.pid },
+      };
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async startSprint(sid: string) { }
+  
+  async endSprint(sid: string, payload: EndSprintDto) {
+    try {
+      const pid = await prisma.sprints.update({
+        where: { id: sid },
+        data: {
+          started: false,
+          note: payload.note
+        },
+        select: {pid: true }
+      })
+
+      if (payload.tasks.length !== 0) {
+        await prisma.tasks.updateMany({
+          where: {
+            id: {
+              in: payload.tasks,
+            },
+          },
+          data: {
+            sid: payload.sid
+          },
+        })
+      }
+
+      return { message: "Sprint ended", pid: pid.pid }
+    } catch (error) {
+      throw new InternalServerErrorException(error)
     }
   }
 }

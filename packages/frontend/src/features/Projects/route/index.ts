@@ -32,6 +32,14 @@ const projectRoutes: RouteRecordRaw[] = [
             },
           },
           {
+            path: ':sprintId/end',
+            name: 'end-sprint',
+            component: () => import('../view/EndSprint.vue'),
+            meta: {
+              acl: ['ADMIN']
+            },
+          },
+          {
             path: ':sprintId/:taskId',
             name: 'view-sprint-task',
             component: () => import('../view/ViewTask.vue')

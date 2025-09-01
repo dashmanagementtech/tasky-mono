@@ -9,7 +9,7 @@ import {
   Request,
 } from '@nestjs/common';
 import { SprintsService } from './sprints.service';
-import { CreateSprintDto, CreateSprintTaskDto } from './dto/create-sprint.dto';
+import { CreateSprintDto, CreateSprintTaskDto, EndSprintDto } from './dto/create-sprint.dto';
 import { UpdateSprintDto } from './dto/update-sprint.dto';
 
 @Controller('sprints')
@@ -27,8 +27,8 @@ export class SprintsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.sprintsService.findOne(id);
+  findSprintById(@Param('id') id: string) {
+    return this.sprintsService.findSprintById(id);
   }
 
   @Patch(':id')
@@ -43,6 +43,19 @@ export class SprintsController {
     @Param('id') id: string,
   ) {
     return this.sprintsService.createSprintTask(id, createSprintDto, req);
+  }
+
+  @Patch(':id/sprint')
+  endSprint(
+    @Body() createSprintDto: EndSprintDto,
+    @Param('id') id: string,
+  ) {
+    return this.sprintsService.endSprint(id, createSprintDto);
+  }
+
+  @Get('project/:id')
+  findOne(@Param('id') id: string) {
+    return this.sprintsService.findSprintsByProjectId(id);
   }
 
   @Get('/task/:id')
