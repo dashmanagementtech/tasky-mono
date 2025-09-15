@@ -5,18 +5,24 @@ import { useRouter } from 'vue-router';
 
 import { useDate } from '@/shared/composables/useDate'
 import { TAG_TYPES } from '@/shared/utils/constants'
+import { useSprint } from '../composable/useSprints';
 
 const { sprint } = defineProps<{ sprint: Record<string, any> }>()
 
 const router = useRouter()
 const { format } = useDate()
+const { startSprintById } = useSprint()
 
 const isOpened = ref(false)
 
-function handleCommand(action: 'start' | 'stop' | 'edit') {
+async function handleCommand(action: 'start' | 'stop' | 'edit') {
   switch (action) {
     case 'stop':
       router.push({ name: 'end-sprint', params: { sprintId: sprint.id, id: sprint.pid } })
+      break;
+
+    case 'start':
+      await startSprintById(sprint.id)
       break;
 
     default:
@@ -73,7 +79,7 @@ function handleCommand(action: 'start' | 'stop' | 'edit') {
                   <el-icon :size="16">
                     <CircleClose />
                   </el-icon>
-                  Stop Sprint
+                  End Sprint
                 </div>
               </el-dropdown-item>
             </el-dropdown-menu>

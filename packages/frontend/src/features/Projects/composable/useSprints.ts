@@ -99,6 +99,17 @@ export function useSprint() {
     }
   }
 
+  const startSprintById = async (sprintId: string) => {
+    try {
+      const { message, pid } = await api.put(`/${sprintId}/sprint`, {})
+      ElMessage.success(message)
+      await fetchAllSprintsByProjectId(pid)
+    } catch (error: any | { message: any }) {
+      ElMessage.error(error.message)
+      throw error
+    }
+  }
+
   const endSprintById = async (id: string, form: any) => {
     try {
       const { message, pid } = await api.patch(`/${id}/sprint`, form)
@@ -122,6 +133,7 @@ export function useSprint() {
     findTaskById,
     updateTaskById,
     findSprintById,
-    endSprintById
+    endSprintById,
+    startSprintById
   }
 }

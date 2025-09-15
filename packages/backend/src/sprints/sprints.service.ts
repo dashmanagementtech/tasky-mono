@@ -1,5 +1,9 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { CreateSprintDto, CreateSprintTaskDto, EndSprintDto } from './dto/create-sprint.dto';
+import {
+  CreateSprintDto,
+  CreateSprintTaskDto,
+  EndSprintDto,
+} from './dto/create-sprint.dto';
 import { UpdateSprintDto } from './dto/update-sprint.dto';
 import { prisma } from 'config/prisma';
 import { getUserFromRequest } from 'utils/helpers';
@@ -82,7 +86,7 @@ export class SprintsService {
                   firstName: true,
                   lastName: true,
                 },
-              }
+              },
             },
           },
         },
@@ -244,18 +248,48 @@ export class SprintsService {
     }
   }
 
-  async startSprint(sid: string) { }
-  
+  async startSprint(sid: string) {
+    try {
+      const pid = await prisma.sprints.findUnique({
+        where: { id: sid },
+        select: { pid: true },
+      });
+
+      if (pid && pid.pid) {
+        await prisma.sprints.updateMany({
+          where: {
+            pid: pid?.pid,
+          },
+          data: {
+            started: false,
+          },
+        });
+      }
+
+      await prisma.sprints.update({
+        where: {
+          id: sid,
+        },
+        data: { started: true },
+      });
+
+      return { message: 'sprint started', pid: pid?.pid };
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
+
   async endSprint(sid: string, payload: EndSprintDto) {
     try {
       const pid = await prisma.sprints.update({
         where: { id: sid },
         data: {
           started: false,
-          note: payload.note
+          note: payload.note,
         },
-        select: {pid: true }
-      })
+        select: { pid: true },
+      });
 
       if (payload.tasks.length !== 0) {
         await prisma.tasks.updateMany({
@@ -265,14 +299,14 @@ export class SprintsService {
             },
           },
           data: {
-            sid: payload.sid
+            sid: payload.sid,
           },
-        })
+        });
       }
 
-      return { message: "Sprint ended", pid: pid.pid }
+      return { message: 'Sprint ended', pid: pid.pid };
     } catch (error) {
-      throw new InternalServerErrorException(error)
+      throw new InternalServerErrorException(error);
     }
   }
 }

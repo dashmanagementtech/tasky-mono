@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Request,
+  Put,
 } from '@nestjs/common';
 import { SprintsService } from './sprints.service';
 import { CreateSprintDto, CreateSprintTaskDto, EndSprintDto } from './dto/create-sprint.dto';
@@ -46,11 +47,13 @@ export class SprintsController {
   }
 
   @Patch(':id/sprint')
-  endSprint(
-    @Body() createSprintDto: EndSprintDto,
-    @Param('id') id: string,
-  ) {
+  endSprint(@Body() createSprintDto: EndSprintDto, @Param('id') id: string) {
     return this.sprintsService.endSprint(id, createSprintDto);
+  }
+
+  @Put(':id/sprint')
+  startSprint(@Param('id') id: string) {
+    return this.sprintsService.startSprint(id);
   }
 
   @Get('project/:id')
