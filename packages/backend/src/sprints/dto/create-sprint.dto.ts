@@ -1,4 +1,4 @@
-import { IsDateString, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsDateString, IsOptional, IsString } from 'class-validator';
 
 export class CreateSprintDto {
   @IsString()
@@ -61,4 +61,16 @@ export class UpdateSprintTaskDto {
   @IsOptional()
   @IsString()
   description!: string;
+}
+
+export class EndSprintDto {
+  @IsArray()
+  tasks!: string[]
+
+  @IsString()
+  @IsOptional()
+  note!: string
+
+  @IsString()
+  sid!: string
 }

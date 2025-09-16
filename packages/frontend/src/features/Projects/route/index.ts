@@ -6,8 +6,8 @@ const projectRoutes: RouteRecordRaw[] = [
     meta: {
       layout: 'app',
       parent: '/app/projects',
-      acl: [],
-      name: 'projects'
+      name: 'projects',
+      protected: true
     },
     children: [
       {
@@ -18,12 +18,26 @@ const projectRoutes: RouteRecordRaw[] = [
           {
             path: 'add-sprint',
             name: 'add-sprint',
-            component: () => import('../view/AddSprint.vue')
+            component: () => import('../view/AddSprint.vue'),
+            meta: {
+              acl: ['ADMIN']
+            },
           },
           {
             path: ':sprintId/add-task',
             name: 'add-task-to-sprint',
-            component: () => import('../view/AddTask.vue')
+            component: () => import('../view/AddTask.vue'),
+            meta: {
+              acl: ['ADMIN']
+            },
+          },
+          {
+            path: ':sprintId/end',
+            name: 'end-sprint',
+            component: () => import('../view/EndSprint.vue'),
+            meta: {
+              acl: ['ADMIN']
+            },
           },
           {
             path: ':sprintId/:taskId',
@@ -33,17 +47,26 @@ const projectRoutes: RouteRecordRaw[] = [
           {
             path: 'add-task',
             name: 'add-task',
-            component: () => import('../view/AddTask.vue')
+            component: () => import('../view/AddTask.vue'),
+            meta: {
+              acl: ['ADMIN']
+            },
           },
           {
             path: 'edit',
             name: 'edit-project',
-            component: () => import('../view/EditProject.vue')
+            component: () => import('../view/EditProject.vue'),
+            meta: {
+              acl: ['ADMIN']
+            },
           },
           {
             path: 'add-document',
             name: 'add-document',
-            component: () => import('../view/AddDcument.vue')
+            component: () => import('../view/AddDcument.vue'),
+            meta: {
+              acl: ['ADMIN']
+            },
           }
         ]
       },
@@ -55,7 +78,10 @@ const projectRoutes: RouteRecordRaw[] = [
           {
             path: 'new',
             name: 'new-project',
-            component: () => import('../view/NewProject.vue')
+            component: () => import('../view/NewProject.vue'),
+            meta: {
+              acl: ['ADMIN']
+            },
           },
           {
             path: 'view/:id',

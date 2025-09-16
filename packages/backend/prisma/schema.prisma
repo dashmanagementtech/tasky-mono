@@ -88,6 +88,8 @@ model Sprints {
   startDate DateTime
   endDate   DateTime
   goals     String   @db.VarChar(5000)
+  started   Boolean  @default(false)
+  note      String   @default("") @db.VarChar(300)
   pid       String
   uid       String
 

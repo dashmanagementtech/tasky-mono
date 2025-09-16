@@ -11,9 +11,9 @@ import { PaginationDto } from 'utils/pagination.dto';
 @Injectable()
 export class ProjectsService {
   async create(createProjectDto: CreateProjectDto, req: any) {
-    const user = await getUserFromRequest(req);
-
     try {
+      const user = await getUserFromRequest(req);
+
       const { id } = await prisma.projects.create({
         data: {
           uid: user.id,
@@ -31,44 +31,115 @@ export class ProjectsService {
     }
   }
 
-  async fetchAllProjects(pagination: PaginationDto) {
+  async fetchAllProjects(pagination: PaginationDto, req: any) {
     try {
-      const [projects, count] = await prisma.$transaction([
-        prisma.projects.findMany({
-          include: {
-            client: {
-              select: {
-                firstName: true,
-                lastName: true,
+      const user = await getUserFromRequest(req);
+      let projects: unknown[] = [];
+      let count = 0;
+      if (user.role === 'ADMIN') {
+        const [allProjects, allCount] = await prisma.$transaction([
+          prisma.projects.findMany({
+            include: {
+              client: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                },
+              },
+              users: {
+                include: {
+                  user: {
+                    select: {
+                      firstName: true,
+                      lastName: true,
+                      img: true,
+                    },
+                  },
+                },
+              },
+              createdBy: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  img: true,
+                },
               },
             },
-            users: {
-              include: {
-                user: {
-                  select: {
-                    firstName: true,
-                    lastName: true,
-                    img: true,
+            orderBy: {
+              createdAt: 'desc',
+            },
+            skip: Number(pagination.page * pagination.size),
+            take: Number(pagination.size),
+          }),
+          prisma.projects.count(),
+        ]);
+
+        projects = allProjects;
+        count = allCount;
+      } else {
+        const [allProjects, allCount] = await prisma.$transaction([
+          prisma.projects.findMany({
+            where: {
+              sprints: {
+                some: {
+                  tasks: {
+                    some: {
+                      uid: user.id,
+                    },
                   },
                 },
               },
             },
-            createdBy: {
-              select: {
-                firstName: true,
-                lastName: true,
-                img: true,
+            include: {
+              client: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                },
+              },
+              users: {
+                include: {
+                  user: {
+                    select: {
+                      firstName: true,
+                      lastName: true,
+                      img: true,
+                    },
+                  },
+                },
+              },
+              createdBy: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  img: true,
+                },
               },
             },
-          },
-          orderBy: {
-            createdAt: 'desc',
-          },
-          skip: Number(pagination.page * pagination.size),
-          take: Number(pagination.size),
-        }),
-        prisma.projects.count(),
-      ]);
+            orderBy: {
+              createdAt: 'desc',
+            },
+            skip: Number(pagination.page * pagination.size),
+            take: Number(pagination.size),
+          }),
+          prisma.projects.count({
+            where: {
+              sprints: {
+                some: {
+                  tasks: {
+                    some: {
+                      uid: user.id,
+                    },
+                  },
+                },
+              },
+            },
+          }),
+        ]);
+
+        projects = allProjects;
+        count = allCount;
+      }
 
       return { count, projects };
     } catch (error) {
@@ -130,7 +201,7 @@ export class ProjectsService {
         select: { documents: true },
       });
 
-      const documents = (docs?.documents as any[] | null) ?? []
+      const documents = (docs?.documents as any[] | null) ?? [];
 
       await prisma.projects.update({
         where: { id },
@@ -157,6 +228,182 @@ export class ProjectsService {
       return { message: 'users added to project' };
     } catch (error) {
       console.log(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async projectAnalytics(req: any) {
+    try {
+      const user = await getUserFromRequest(req);
+
+      let total = 0;
+      let active = 0;
+      let completed = 0;
+
+      if (user.role === 'ADMIN') {
+        const [allTotal, allActive, allCompleted] = await Promise.all([
+          prisma.tasks.count(),
+          prisma.tasks.count({
+            where: {
+              status: 'IN_PROGRESS',
+            },
+          }),
+          prisma.tasks.count({
+            where: {
+              status: 'DONE',
+            },
+          }),
+        ]);
+
+        total = allTotal;
+        active = allActive;
+        completed = allCompleted;
+      } else {
+        const [allTotal, allActive, allCompleted] = await Promise.all([
+          prisma.tasks.count({
+            where: {
+              uid: user.id,
+            },
+          }),
+          prisma.tasks.count({
+            where: {
+              uid: user.id,
+              status: 'IN_PROGRESS',
+            },
+          }),
+          prisma.tasks.count({
+            where: {
+              uid: user.id,
+              status: 'DONE',
+            },
+          }),
+        ]);
+
+        total = allTotal;
+        active = allActive;
+        completed = allCompleted;
+      }
+
+      return {
+        total,
+        completed,
+        active,
+        productivity: Math.ceil((completed / total) * 100),
+      };
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async upcomingTasks(req: any) {
+    try {
+      const user = await getUserFromRequest(req);
+      let deadlines: unknown[] = [];
+
+      if (user.role === 'ADMIN') {
+        deadlines = await prisma.tasks.findMany({
+          where: {
+            dueDate: {
+              gte: new Date(),
+            },
+            NOT: {
+              status: 'DONE',
+            },
+          },
+          include: {
+            sprint: {
+              include: {
+                project: {
+                  select: {
+                    title: true,
+                    id: true,
+                  },
+                },
+              },
+            },
+          },
+          orderBy: {
+            dueDate: 'asc',
+          },
+          take: 3,
+        });
+      } else {
+        deadlines = await prisma.tasks.findMany({
+          where: {
+            uid: user.id,
+            dueDate: {
+              gte: new Date(),
+            },
+            NOT: {
+              status: 'DONE',
+            },
+          },
+          include: {
+            sprint: {
+              include: {
+                project: {
+                  select: {
+                    title: true,
+                    id: true,
+                  },
+                },
+              },
+            },
+          },
+          orderBy: {
+            dueDate: 'asc',
+          },
+          take: 3,
+        });
+      }
+
+      return { deadlines };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getUserTasks(req: any) {
+    try {
+      const user = await getUserFromRequest(req);
+      let tasks: unknown[] = [];
+
+      if (user.role === 'ADMIN') {
+        tasks = await prisma.tasks.findMany({
+          include: {
+            sprint: {
+              include: {
+                project: {
+                  select: {
+                    title: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+      } else {
+        tasks = await prisma.tasks.findMany({
+          where: {
+            uid: user.id,
+          },
+          include: {
+            sprint: {
+              include: {
+                project: {
+                  select: {
+                    title: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+      }
+
+      return { tasks };
+    } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
