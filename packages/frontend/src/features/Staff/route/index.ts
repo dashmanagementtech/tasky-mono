@@ -7,7 +7,7 @@ const staffRoutes: RouteRecordRaw[] = [
       layout: 'app',
       parent: '/app/staff',
       meta: {
-        acl: ['ADMIN']
+        acl: ['ADMIN', 'SUPER_ADMIN']
       },
       name: 'staff',
       protected: true

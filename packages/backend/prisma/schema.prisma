@@ -145,6 +145,7 @@ model Projects_Users {
 }
 
 enum ROLE {
+  SUPER_ADMIN
   ADMIN
   USER
   CLIENT

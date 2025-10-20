@@ -7,7 +7,7 @@ const clientRoutes: RouteRecordRaw[] = [
       layout: 'app',
       parent: '/app/clients',
       meta: {
-        acl: ['ADMIN']
+        acl: ['ADMIN', 'SUPER_ADMIN']
       },
       name: 'clients',
       protected: true

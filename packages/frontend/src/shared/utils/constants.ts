@@ -1,5 +1,9 @@
 export const USER_TYPES = [
   {
+    label: 'Super Admin',
+    value: 'SUPER_ADMIN',
+  },
+  {
     label: 'Admin',
     value: 'ADMIN',
   },

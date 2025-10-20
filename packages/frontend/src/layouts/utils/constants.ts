@@ -24,13 +24,13 @@ export const ROUTES: IRoutes[] = [
     uri: '/app/staff',
     title: 'Staff',
     icon: StaffIcon,
-    acl: ['ADMIN']
+    acl: ['ADMIN', 'SUPER_ADMIN']
   },
   {
     uri: '/app/clients',
     title: 'Clients',
     icon: ClientIcon,
-    acl: ['ADMIN']
+    acl: ['ADMIN', 'SUPER_ADMIN']
   },
   {
     uri: '//dashtechmanagement.com/blog',

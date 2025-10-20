@@ -1,4 +1,4 @@
-import type { RouteRecordRaw } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router'
 
 const projectRoutes: RouteRecordRaw[] = [
   {
@@ -7,7 +7,7 @@ const projectRoutes: RouteRecordRaw[] = [
       layout: 'app',
       parent: '/app/projects',
       name: 'projects',
-      protected: true
+      protected: true,
     },
     children: [
       {
@@ -20,7 +20,7 @@ const projectRoutes: RouteRecordRaw[] = [
             name: 'add-sprint',
             component: () => import('../view/AddSprint.vue'),
             meta: {
-              acl: ['ADMIN']
+              acl: ['ADMIN', 'SUPER_ADMIN'],
             },
           },
           {
@@ -28,7 +28,7 @@ const projectRoutes: RouteRecordRaw[] = [
             name: 'add-task-to-sprint',
             component: () => import('../view/AddTask.vue'),
             meta: {
-              acl: ['ADMIN']
+              acl: ['ADMIN', 'SUPER_ADMIN'],
             },
           },
           {
@@ -36,28 +36,25 @@ const projectRoutes: RouteRecordRaw[] = [
             name: 'end-sprint',
             component: () => import('../view/EndSprint.vue'),
             meta: {
-              acl: ['ADMIN']
+              acl: ['ADMIN', 'SUPER_ADMIN'],
             },
           },
           {
             path: ':sprintId/:taskId',
             name: 'view-sprint-task',
-            component: () => import('../view/ViewTask.vue')
+            component: () => import('../view/ViewTask.vue'),
           },
           {
             path: 'add-task',
             name: 'add-task',
             component: () => import('../view/AddTask.vue'),
-            meta: {
-              acl: ['ADMIN']
-            },
           },
           {
             path: 'edit',
             name: 'edit-project',
             component: () => import('../view/EditProject.vue'),
             meta: {
-              acl: ['ADMIN']
+              acl: ['ADMIN', 'SUPER_ADMIN'],
             },
           },
           {
@@ -65,10 +62,10 @@ const projectRoutes: RouteRecordRaw[] = [
             name: 'add-document',
             component: () => import('../view/AddDcument.vue'),
             meta: {
-              acl: ['ADMIN']
+              acl: ['ADMIN', 'SUPER_ADMIN'],
             },
-          }
-        ]
+          },
+        ],
       },
       {
         path: '',
@@ -80,21 +77,21 @@ const projectRoutes: RouteRecordRaw[] = [
             name: 'new-project',
             component: () => import('../view/NewProject.vue'),
             meta: {
-              acl: ['ADMIN']
+              acl: ['ADMIN', 'SUPER_ADMIN'],
             },
           },
           {
             path: 'view/:id',
             name: 'peek-project',
             meta: {
-              side: true
+              side: true,
             },
-            component: () => import('../view/ViewProject.vue')
-          }
-        ]
-      }
-    ]
+            component: () => import('../view/ViewProject.vue'),
+          },
+        ],
+      },
+    ],
   },
 ]
 
-export default projectRoutes;
+export default projectRoutes
